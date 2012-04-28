@@ -4,11 +4,11 @@
   "description": "Facebook link manager",
 
   "permissions": [
-    "https://*.facebook.com"
+    "*://*.facebook.com"
   ],
   "content_scripts": [
     {
-      "matches": ["https://www.facebook.com/*"],
+      "matches": ["*://www.facebook.com/*"],
       "js": ["js/scrapper.js"]
     }
   ],
