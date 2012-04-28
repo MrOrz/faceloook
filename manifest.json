@@ -1,0 +1,22 @@
+{
+  "name": "Facelink",
+  "version": "0.0.1",
+  "description": "Facebook link manager",
+
+  "permissions": [
+    "https://*.facebook.com"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://www.facebook.com/*"],
+      "js": ["js/scrapper.js"]
+    }
+  ],
+  "browser_action": {
+     "default_icon": "images/history.png",
+     "default_title": "Facebook link manager"
+   },
+  "background": {
+    "scripts": ["js/bg.js"]
+  }
+}
