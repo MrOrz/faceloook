@@ -62,11 +62,24 @@
   }
 
   var testSubtreeObserver = new WebKitMutationObserver(function(mutations){
-    var $nodes = jQuery();
+
+    // squash all added nodes into one jQuery object.
+    var $nodes = $();
     $.each(mutations, function(){
       $nodes = $nodes.add(this.addedNodes);
     });
-    console.log('Subtree Mutations: ', $nodes);
+
+    var
+    $ul = $nodes.filter('.uiStreamHomepage'),
+    $stories = $nodes.filter('.uiStreamStory');
+
+    if($ul.length){
+      console.log('=== PAGE CHANGE ===');
+    }else if($stories.length){
+      console.log('=== STORY ADDED ===', $stories);
+    }else{
+      console.log('Subtree Mutations: ', $nodes);
+    }
   });
 
   testSubtreeObserver.observe( $('#contentCol').get(0), {subtree: true, childList: true} );
