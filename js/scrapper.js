@@ -1,6 +1,6 @@
-/*global WebKitMutationObserver */
+/*global WebKitMutationObserver, chrome */
 
-(function(undefined){
+(function(chrome, undefined){
   "use strict";
 
 
@@ -41,10 +41,14 @@
   markAsSeen = function(fbid){
     console.log('SEEN:', fbid);
     // insert row into backend
+    chrome.extension.sendRequest({ type: 'insert', fbid: fbid });
+
     delete storiesNotShown[fbid];
   },
   markAsClicked = function(fbid){
     // insert into or update into backend
+    chrome.extension.sendRequest({ type: 'update', fbid: fbid });
+
     console.log('STORY', fbid, "clicked!");
   },
 
@@ -153,4 +157,4 @@
     subtree: true, childList: true
   });
   getStories($('.uiStreamStory'));
-}());
+}(chrome));
