@@ -66,3 +66,14 @@ a img {
 article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary {
   display: block;
 }
+
+/* line 8, ../sass/popup.scss */
+body {
+  width: 500px;
+}
+
+/* line 12, ../sass/popup.scss */
+th, td {
+  border: 1px solid #ccc;
+  padding: .3em .5em;
+}

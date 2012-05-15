@@ -4,3 +4,12 @@
  * <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" /> */
 
 @import "compass/reset";
+
+body{
+  width: 500px;
+}
+
+th, td{
+  border: 1px solid #ccc;
+  padding: .3em .5em;
+}
