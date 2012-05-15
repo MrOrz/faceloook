@@ -1,4 +1,6 @@
 Faceloook::Application.routes.draw do
+
+  post 'cas' => 'cas#query'
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
