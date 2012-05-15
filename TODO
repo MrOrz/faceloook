@@ -1,0 +1,31 @@
+collecting implicit interested item & explicit action item
+
+Determine features like mouse interaction, scrolling speed, whatever we like.
+
+This is to mark "interested" items more accurately.
+
+
+TODO:
+
+features related to contents:
+  - text
+  - group
+  - type
+  - URLs
+
+features including explicit actions:
+  - facebook interactions: like, comment, share, etc.
+  - click events like select
+
+features including implicit actions:
+  - mouse movements
+  - scrolling speed
+  - the position on screen
+  - feed visible time on screen
+  -
+
+Debriefing extension:
+  - Ask whether the user might want to see later
+    - important
+    - useful
+    - interesting
