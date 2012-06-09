@@ -5,7 +5,7 @@
 
   "permissions": [
     "*://*.facebook.com",
-    "*://connect.facebook.net"
+    "tabs" // for facebook login
   ],
   "content_scripts": [
     {
