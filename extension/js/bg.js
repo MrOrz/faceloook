@@ -1,4 +1,4 @@
-/*global chrome */
+/*global chrome, FB */
 
 (function(chrome, undefined){
   "use strict";
@@ -28,4 +28,7 @@
     }
   });
 
+  FB.get('me/home', function(data){
+    console.log(data);
+  });
 }(chrome));

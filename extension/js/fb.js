@@ -9,6 +9,7 @@
     "224887097626771&response_type=token&scope=read_stream&redirect_uri=" +
     "http://www.facebook.com/connect/login_success.html",
   SUCCESS_URL = "https://www.facebook.com/connect/login_success.html",
+  API_URL = "https://graph.facebook.com/",
   callbacks = {
     contentParsed: $.Callbacks('unique memory'),
     loggedIn: $.Callbacks('unique memory')
@@ -40,6 +41,9 @@
           chrome.tabs.onUpdated.removeListener(FB._facebookLogin);
           chrome.tabs.remove(FB._loginTabId);
           FB._loginTabId = null;
+
+          // fire loggedIn callback
+          callbacks.loggedIn.fire();
         }
       }
     },
@@ -63,7 +67,7 @@
         chrome.tabs.onUpdated.addListener(FB._facebookLogin);
       });
     },
-    get: function(url, data, func){
+    get: function(url, func){
 
       // If no access token
       if(!localStorage.accessToken){
@@ -76,17 +80,29 @@
         FB.login();
       }
       else { // If has access token
-        $.getJSON(url+'?access_token='+localStorage.accessToken, {},
+        $.getJSON(API_URL + url + '?access_token=' + localStorage.accessToken, {},
           function(data){
-            console.log('Result of ', url, ' is ', data);
+            func(data);
+          }).fail(function(jqXHR){
+            var err = $.parseJSON(jqXHR.responseText).error;
+            console.error('Error while requesting "'+url+'" : ', err);
+
+            // Check if access token is invalid (error code 190).
+            // If so, clean up access token and try again.
+            if(err.code === 190){
+              delete localStorage.accessToken;
+              FB.get(url, func);
+            }
           });
       }
+
+      return FB; // enable chaining
     }
   };
 
   // facebook inititialization
-  if(! localStorage.accessToken){
-    FB.login();
-  }
+  //if(! localStorage.accessToken){
+  //  FB.login();
+  //}
 
 }(chrome));
