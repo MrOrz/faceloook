@@ -4,7 +4,8 @@
   "description": "Facebook link manager",
 
   "permissions": [
-    "*://*.facebook.com"
+    "*://*.facebook.com",
+    "*://connect.facebook.net"
   ],
   "content_scripts": [
     {
@@ -23,6 +24,7 @@
   "background": {
     "scripts": [
       "js/jquery.min.js",
+      "js/fb.js",
       "js/db.js",
       "js/bg.js"
     ]

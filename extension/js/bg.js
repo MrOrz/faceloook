@@ -3,6 +3,7 @@
 (function(chrome, undefined){
   "use strict";
 
+  // Chrome extension listener
   chrome.extension.onRequest.addListener(function(request){
     var fbid;
     switch(request.type){
