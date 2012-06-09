@@ -15,9 +15,11 @@
     loggedIn: $.Callbacks('unique memory')
   };
 
-  // Pub/sub interface
+  // facebook Pub/sub and GET request interface
   window.FB = {
     _loginTabId: null,
+
+    // Check if the eventType is available to subscribe.
     _check : function(eventType){
       if(!callbacks[eventType]){
         console.error('Undefined event type for myFB');
@@ -25,7 +27,9 @@
       }
       return true;
     },
-    // event handler of login tab URL change
+
+    // Event handler of login tab URL change.
+    // It seeks for target page that contains accessToken info.
     _facebookLogin : function(tabId, changeInfo, tab){
       // check if the login tab achieves success state
       console.log('Tab change info:', changeInfo, tab, FB._loginTabId);
@@ -47,18 +51,24 @@
         }
       }
     },
+
+    // pub/sub interface
     subscribe : function(eventType, func){
       if(this._check(eventType)){
         callbacks[eventType].add(func);
       }
       return this;
     },
+
+    // pub/sub interface
     unsubscribe : function(eventType, func){
       if(this._check(eventType)){
         callbacks[eventType].remove(func);
       }
       return this;
     },
+
+    // Log the user in, whose process continues in FB._facebookLogin.
     login: function(){
       chrome.tabs.create({
         url: LOGIN_URL
@@ -67,42 +77,50 @@
         chrome.tabs.onUpdated.addListener(FB._facebookLogin);
       });
     },
-    get: function(url, func){
+
+    // Send GET requests to facebook graph API.
+    // Usage: FB.get('me/feed', function(data){...})
+    //        FB.get('me/feed', {limit:10}, function(data){...})
+    get: function(url, data, func){
+
+      // normalize
+      if($.isFunction(data)){
+        func = data;
+        data = {};
+      }
 
       // If no access token
       if(!localStorage.accessToken){
         // Retry after logged in
         FB.subscribe('loggedIn', function retry(){
-          FB.get(url, func);
+          FB.get(url, data, func);
           FB.unsubscribe('loggedIn', retry);
         });
         // trigger login
         FB.login();
       }
-      else { // If has access token
-        $.getJSON(API_URL + url + '?access_token=' + localStorage.accessToken, {},
-          function(data){
-            func(data);
-          }).fail(function(jqXHR){
-            var err = $.parseJSON(jqXHR.responseText).error;
-            console.error('Error while requesting "'+url+'" : ', err);
 
-            // Check if access token is invalid (error code 190).
-            // If so, clean up access token and try again.
-            if(err.code === 190){
-              delete localStorage.accessToken;
-              FB.get(url, func);
-            }
-          });
+      // If has access token, send query via ajax
+      else {
+        $.getJSON(API_URL + url, $.extend({
+          access_token: localStorage.accessToken
+        }, data), function(data){
+          func(data);
+        }).fail(function(jqXHR){
+          var err = $.parseJSON(jqXHR.responseText).error;
+          console.error('Error while requesting "'+url+'" : ', err);
+
+          // Check if access token is invalid (error code 190).
+          // If so, clean up access token and try again.
+          if(err.code === 190){
+            delete localStorage.accessToken;
+            FB.get(url, data, func);
+          }
+        });
       }
 
       return FB; // enable chaining
     }
   };
-
-  // facebook inititialization
-  //if(! localStorage.accessToken){
-  //  FB.login();
-  //}
 
 }(chrome));
