@@ -8,7 +8,7 @@ gem 'rails', '3.2.3'
 group :development do
   gem 'sqlite3'
 end
-gem 'rest-core'
+gem 'rmmseg'
 
 # Gems used only for assets and not required
 # in production environments by default.
