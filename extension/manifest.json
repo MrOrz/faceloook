@@ -4,7 +4,8 @@
   "description": "Facebook link manager",
 
   "permissions": [
-    "*://*.facebook.com",
+    "*://*.facebook.com/",
+    "*://asia.search.yahooapis.com/",
     "tabs" // for facebook login
   ],
   "content_scripts": [
@@ -24,6 +25,7 @@
   "background": {
     "scripts": [
       "js/jquery.min.js",
+      "js/yahoocas.js",
       "js/fb.js",
       "js/db.js",
       "js/bg.js"

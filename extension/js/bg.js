@@ -28,7 +28,28 @@
     }
   });
 
-  FB.get('me/home', function(data){
-    console.log(data);
+  FB.get('', {ids: "376434952420447,308419275917340,253421998091422,479693128713020"},function(data){
+    $.each(data, function(){
+
+      var item = {
+        id : this.id,
+        groupId : '',
+        message : this.message || "",
+        from : this.from.name,
+        updated : this.updated_time || this.created_time,
+        link : this.link || "",
+        linkName : this.name || "",
+        linkDesct : this.description || ""
+      };
+
+      // Group message detection
+      var tokens = this.id.split('_');
+      if(tokens.length === 2){
+        item.groupId = tokens[0];
+        item.id = tokens[1];
+      }
+
+      console.log('ITEM', item);
+    });
   });
 }(chrome));

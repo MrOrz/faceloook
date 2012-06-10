@@ -5,10 +5,11 @@
 
   // Pub/sub interface
   var
-  LOGIN_URL = "https://www.facebook.com/dialog/oauth?client_id=" +
-    "224887097626771&response_type=token&scope=read_stream&redirect_uri=" +
-    "http://www.facebook.com/connect/login_success.html",
   SUCCESS_URL = "https://www.facebook.com/connect/login_success.html",
+  LOGIN_URL = "https://www.facebook.com/dialog/oauth?client_id=" +
+    "224887097626771&response_type=token&" +
+    "scope=read_stream,user_groups,friends_groups,user_photos,friends_photos&" +
+    "redirect_uri=" + SUCCESS_URL,
   API_URL = "https://graph.facebook.com/",
   callbacks = {
     contentParsed: $.Callbacks('unique memory'),
@@ -83,7 +84,7 @@
     //        FB.get('me/feed', {limit:10}, function(data){...})
     get: function(url, data, func){
 
-      // normalize
+      // normalize the arguments
       if($.isFunction(data)){
         func = data;
         data = {};
