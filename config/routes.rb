@@ -1,7 +1,6 @@
 Faceloook::Application.routes.draw do
 
-  post 'cas' => 'cas#query'
-  match 'channel' => 'fb#channel'
+  match 'q' => 'cas#query'
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
