@@ -25,6 +25,8 @@
   "background": {
     "scripts": [
       "js/jquery.min.js",
+      "js/underscore.min.js",
+      "js/classifier.js",
       "js/yahoocas.js",
       "js/fb.js",
       "js/db.js",
