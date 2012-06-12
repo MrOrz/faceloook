@@ -2,6 +2,6 @@ class CasController < ApplicationController
   require 'RMMSegProxy'
 
   def query
-    render :json => seg(params[:term])
+    render :text => seg(params[:term]).join(' ')
   end
 end
