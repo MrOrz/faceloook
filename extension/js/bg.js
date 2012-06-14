@@ -28,8 +28,7 @@
 
   // Batch processing the data in database rows.
   // First it asks FB to get the items needed,
-  // then it consults CAS to get tokenized text features,
-  // which is
+  // then it consults CAS to get tokenized text features.
   batch = function(rows){
     var
       dfd = $.Deferred(),
@@ -129,7 +128,7 @@
 
   processData(function(data){
     /*
-      {
+      data = {
         131051573672766_242421059202483: {
           from: "1621831892"
           groupId: "131051573672766"
