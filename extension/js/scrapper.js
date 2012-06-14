@@ -54,10 +54,10 @@
 
   // Process the story <li> with known facebook id.
   processStory = function($story, fbid){
-    // push into scroll-event checking queue.
+    // Push into scroll-event checking queue.
     storiesNotShown[fbid] = $story;
 
-    // TODO: binding click event handlers.
+    // Bind click event handlers.
     $story.click(function(e){
       if(! $(e.target).hasClass('unsub_link')){
         markAsClicked(fbid);
