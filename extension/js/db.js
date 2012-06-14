@@ -1,3 +1,4 @@
+/*global DB */
 (function(openDatabase, undefined){
   "use strict";
   var
@@ -14,6 +15,8 @@
           'id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,' +
           'fbid TEXT NOT NULL,' +
           'clicked INTEGER NOT NULL DEFAULT 0,' +
+          'trained INTEGER NOT NULL DEFAULT 0,' +
+          'explicit INTEGER,' +
           "updated_at TEXT" +
         ');'
       );
@@ -28,7 +31,7 @@
   );
 
   // Execute SQL commands
-  $.db = function(cmd, args, callback){
+  window.DB = function(cmd, args, callback){
     dfd.done(function(db){
       db.transaction(function(tx){
         tx.executeSql(cmd, args, callback);
@@ -37,4 +40,37 @@
       });
     });
   };
+
+  // select all untrained
+  DB.getUntrained = function(callback){
+    DB('SELECT * FROM entry WHERE trained = 0;', {}, callback)
+  }
+
+  // new record in entry
+  DB.insert = function(fbid){
+    console.info('inserting', fbid);
+    DB("INSERT INTO entry (fbid, updated_at)" +
+     "values (?, datetime('now', 'localtime'));",
+      [fbid]);
+  };
+
+  // set as clicked
+  DB.clicked = function(fbid){
+    console.info('updating', fbid);
+    DB("INSERT OR REPLACE INTO entry (fbid, updated_at, clicked)" +
+      "values (?, datetime('now', 'localtime'), 1);",
+      [fbid]);
+  };
+
+  // set as trained
+  DB.trainedAll = function(fbids){
+    console.info('trained', fbids);
+    DB("UPDATE entry SET trained=1 WHERE fbid IN (" + fbids.join(',') + ");");
+  };
+
+  DB.deleteAll = function(fbids){
+    console.info('deleting', fbids);
+    DB('DELETE FROM entry WHERE fbid IN (' + fbids.join(',') + ');');
+  }
+
 }(window.openDatabase));

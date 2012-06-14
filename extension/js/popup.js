@@ -1,3 +1,4 @@
+/*global DB */
 (function(undefined){
   "use strict";
 
@@ -12,7 +13,7 @@
     return $('<tr></tr>').append(td1).append(td2);
   };
 
-  $.db("SELECT * FROM entry WHERE clicked=1 ORDER BY updated_at DESC;",
+  DB("SELECT * FROM entry WHERE clicked=1 ORDER BY updated_at DESC;",
     [], function(tx, result){
       var rows = result.rows, i;
       for(i=0; i<rows.length; i+=1){
@@ -21,7 +22,7 @@
     }
   );
 
-  $.db("SELECT * FROM entry WHERE clicked=0 ORDER BY updated_at DESC;",
+  DB("SELECT * FROM entry WHERE clicked=0 ORDER BY updated_at DESC;",
     [], function(tx, result){
       var rows = result.rows, i;
       for(i=0; i<rows.length; i+=1){

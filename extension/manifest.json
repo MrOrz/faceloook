@@ -5,7 +5,8 @@
 
   "permissions": [
     "*://*.facebook.com/",
-    "*://asia.search.yahooapis.com/",
+    "*://localhost/",
+    // "*://faceloook.heroku.com/",
     "tabs" // for facebook login
   ],
   "content_scripts": [
@@ -27,7 +28,7 @@
       "js/jquery.min.js",
       "js/underscore.min.js",
       "js/classifier.js",
-      "js/yahoocas.js",
+      "js/cas.js",
       "js/fb.js",
       "js/db.js",
       "js/bg.js"

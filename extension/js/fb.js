@@ -12,7 +12,6 @@
     "redirect_uri=" + SUCCESS_URL,
   API_URL = "https://graph.facebook.com/",
   callbacks = {
-    contentParsed: $.Callbacks('unique memory'),
     loggedIn: $.Callbacks('unique memory')
   };
 
@@ -82,11 +81,11 @@
     // Send GET requests to facebook graph API.
     // Usage: FB.get('me/feed', function(data){...})
     //        FB.get('me/feed', {limit:10}, function(data){...})
-    get: function(url, data, func){
+    get: function(url, data, successCallback, failCallback){
 
       // normalize the arguments
       if($.isFunction(data)){
-        func = data;
+        successCallback = data;
         data = {};
       }
 
@@ -94,7 +93,7 @@
       if(!localStorage.accessToken){
         // Retry after logged in
         FB.subscribe('loggedIn', function retry(){
-          FB.get(url, data, func);
+          FB.get(url, data, successCallback, failCallback);
           FB.unsubscribe('loggedIn', retry);
         });
         // trigger login
@@ -106,16 +105,23 @@
         $.getJSON(API_URL + url, $.extend({
           access_token: localStorage.accessToken
         }, data), function(data){
-          func(data);
+          successCallback(data);
         }).fail(function(jqXHR){
-          var err = $.parseJSON(jqXHR.responseText).error;
-          console.error('Error while requesting "'+url+'" : ', err);
+          if(jqXHR.responseText){
+            var err = $.parseJSON(jqXHR.responseText).error;
+            console.error('Error while requesting "'+url+'" : ', err);
 
-          // Check if access token is invalid (error code 190).
-          // If so, clean up access token and try again.
-          if(err.code === 190){
-            delete localStorage.accessToken;
-            FB.get(url, data, func);
+            // Check if access token is invalid (error code 190).
+            // If so, clean up access token and try again.
+            if(err.code === 190){
+              delete localStorage.accessToken;
+              FB.get(url, data, successCallback, failCallback);
+            } else if (failCallback) {
+              failCallback(arguments);
+            }
+          }
+          if (failCallback){
+            failCallback(arguments);
           }
         });
       }
