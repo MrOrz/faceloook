@@ -62,15 +62,22 @@
       [fbid]);
   };
 
-  // set as trained
+  // set fbids as trained
   DB.trainedAll = function(fbids){
     console.info('trained', fbids);
     DB("UPDATE entry SET trained=1 WHERE fbid IN (" + fbids.join(',') + ");");
   };
+  // set all as untrained
+  DB.untrainAll = function(){
+    console.log('All entries are set as "untrained".');
+    DB("UPDATE entry SET trained=0;");
+  };
 
+  // delete all fbids
   DB.deleteAll = function(fbids){
     console.info('deleting', fbids);
     DB('DELETE FROM entry WHERE fbid IN (' + fbids.join(',') + ');');
-  }
+  };
+
 
 }(window.openDatabase));
