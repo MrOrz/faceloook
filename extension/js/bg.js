@@ -114,6 +114,7 @@
           // invoke callback and proceed to the next BATCH_COUNT items.
           batch(buffer).done(function(processedData){
             console.log('First ', i, ' items are processed.', processedData);
+            //callback(processedData);
             _(callback).defer(processedData); // heavy-lifting
           }).fail(function(){
             console.error('Batch processing failed: ', arguments);
@@ -149,7 +150,8 @@
         }, ...
       }
     */
+    
     console.log('Data received by processData: ', data);
-    DB.trainedAll(_(data).pluck('id'))
+    //DB.trainedAll(_(data).pluck('id'));
   });
 }(chrome));

@@ -6,7 +6,8 @@
   "permissions": [
     "*://*.facebook.com/",
     "*://localhost/",
-    // "*://faceloook.heroku.com/",
+    // "http://faceloook.heroku.com/",
+    "*://faceloook.heroku.com/",
     "tabs" // for facebook login
   ],
   "content_scripts": [
