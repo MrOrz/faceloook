@@ -1,5 +1,11 @@
 /*global chrome, FB, DB, _, CAS */
-var bayes = new Bayesian();
+var bayes = new Bayesian({
+  backend:{
+    options : {
+      name : 'japie'
+    }
+  }
+});
 
 (function(chrome, undefined){
   "use strict";
@@ -151,30 +157,29 @@ var bayes = new Bayesian();
         }, ...
       }
     */
-
     
-    console.log('Data received by processData: ', data);
+    // console.log('Data received by processData: ', data);
     $.each(data,function(k,v){
-      console.log('train,msg: ',v['message']);
-      console.log('train,from: ',v['from']);
-      console.log('train,gId: ',v['groupId']);
+      // console.log('train,msg: ',v['message']);
+      // console.log('train,from: ',v['from']);
       // console.log('train,clicked: ',v['rowData']['clicked']);
       // var tmp = {input:v.,output:data.}
-      if(v['message']!=''){
-        bayes.train(v['message'],v['rowData']['clicked']);
-        bayes.train(v['id'],v['rowData']['clicked']);
-        if(v['groupId']!='')
-          bayes.train(v['groupId'],v['rowData']['clicked']);        
+      if(v.message !=''){
+        bayes.train(v.message,v.rowData.clicked);        
+        bayes.train(v.from,v.rowData.clicked);
+        if(v.groupId!='')
+          bayes.train(v.groupId,v.rowData.clicked);
       }
     });
-    //DB.trainedAll(_(data).pluck('id'));
+    // DB.trainedAll(_(data).pluck('id'));
     // bayes.train(data);
-    var category = bayes.classify(data[3422545118629]);   // "spam"
-    console.log('category: ',category);
   });
+  
 
 }(chrome));
 
 
-function testC(){
+function testC(msg){
+  var category = bayes.classify(msg);   // "spam"
+  console.log('category: ',category);
 };

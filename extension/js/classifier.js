@@ -29,6 +29,7 @@ LocalStorageBackend.prototype = {
     // console.log('getCats line29');
     // console.log('this.storage[this.prefix + ".cats" ]');
     // console.log(this.storage[this.prefix + '.cats']);
+    // console.log('return JSON.parse(this.storage[this.prefix + .cats ]);');
     return JSON.parse(this.storage[this.prefix + '.cats']);
   },
 
@@ -46,12 +47,12 @@ LocalStorageBackend.prototype = {
   },
 
   getWordCounts : function(words) {
-    console.log('getWordCounts');
+    // console.log('getWordCounts');
     var counts = {};
     words.forEach(function(word) {
       counts[word] = this.getWordCount(word);
     }, this);
-    console.log('getWordCount, counts:',counts);
+    // console.log('getWordCount, counts:',counts);
     return counts;
   },
 
@@ -61,7 +62,6 @@ LocalStorageBackend.prototype = {
       cats[cat] = cats[cat] + inc || inc;
     }, this);
     this.setCats(cats);
-
     _(wordIncs).each(function(incs, word) {
       var wordCounts = this.getWordCount(word);
       _(incs).each(function(inc, cat) {
@@ -103,7 +103,7 @@ window.Bayesian = function(options) {
 
 window.Bayesian.prototype = {
   getCats : function(callback) {
-    console.log('getCats line100');
+    // console.log('getCats line100');
     return this.backend.getCats(callback);
   },
 
@@ -113,19 +113,19 @@ window.Bayesian.prototype = {
 
   incDocCounts : function(docs, callback) {
     // accumulate all the pending increments
+    // console.log('incDocCounts(docs, callback) ===')    
+
     var wordIncs = {};
-    var catIncs = {};
+    var catIncs = {};    
     docs.forEach(function(doc) {
       var cat = doc.cat;
       catIncs[cat] = catIncs[cat] ? catIncs[cat] + 1 : 1;
-
       var words = this.getWords(doc.doc);
       words.forEach(function(word) {
         wordIncs[word] = wordIncs[word] || {};
         wordIncs[word][cat] = wordIncs[word][cat] ? wordIncs[word][cat] + 1 : 1;
-      }, this);
-    }, this);
-
+      }, this);      
+    }, this);    
     return this.backend.incCounts(catIncs, wordIncs, callback);
   },
 
@@ -134,17 +134,17 @@ window.Bayesian.prototype = {
   },
 
   getWords : function(doc) {
-    console.log('==== getWords() === ');
-    console.log('doc: ',doc);
+    // console.log('==== getWords() === ');
+    // console.log('doc: ',doc);
     if (_(doc).isArray()) {
-      console.log('_(doc).isArray() , return doc ');
+      // console.log('_(doc).isArray() , return doc ');
       return doc;
     }
     //why this line cannot be done well ?
     // var words = doc.split(/\W+/);
     var words = doc.split(" ");    
-    console.log('words: ',words)
-    console.log('return _(words).uniq() : ' , _(words).uniq());
+    // console.log('words: ',words)
+    // console.log('return _(words).uniq() : ' , _(words).uniq());
     return _(words).uniq();
   },
 
@@ -186,42 +186,43 @@ window.Bayesian.prototype = {
   },
 
   getCatProbs : function(cats, words, counts) {
-    console.log('getCatProbs! line173:'); 
-    console.log('cats:',cats);
-    console.log('words:',words);
+    // console.log('getCatProbs! line173:'); 
+    // console.log('cats:',cats);
+    // console.log('words:',words);
     var numDocs = _(cats).reduce(function(sum, count) {
-      console.log('sum+count:',sum+count);
+      // console.log('sum+count:',sum+count);
       return sum + count;
     }, 0);
 
     var probs = {};
-    console.log('_(cats).each(function(catCount, cat) : ');
+    // console.log('_(cats).each(function(catCount, cat) : ');
     _(cats).each(function(catCount, cat) {
-      console.log('catCount: ',catCount);
-      console.log('cat: ',cat);
+      // console.log('catCount: ',catCount);
+      // console.log('cat: ',cat);
       var catProb = (catCount || 0) / numDocs;
-      console.log('catProb =(catCount || 0) / numDocs = ',catProb);
-      console.log('this',this);
-      console.log('_(words): ',_(words));
-      console.log('docProb = _(words).reduce(function(prob, word)');
+      // console.log('catProb =(catCount || 0) / numDocs = ',catProb);
+      // console.log('this',this);
+      // console.log('_(words): ',_(words));
+      // console.log('docProb = _(words).reduce(function(prob, word)');
       var docProb = _(words).reduce(function(prob, word) {
-        console.log('word: ',word);
+        // console.log('word: ',word);
         var wordCounts = counts[word] || {};
-        console.log("wordCounts: = counts[word] || {} ",wordCounts);
-        console.log('this.wordProb(word, cat, cats, wordCounts)');
+        // console.log("wordCounts: = counts[word] || {} ",wordCounts);
+        // console.log('this.wordProb(word, cat, cats, wordCounts)');
         var tmp = prob * this.wordProb(word, cat, cats, wordCounts);
-        console.log('return:',tmp);
+        // console.log('return:',tmp);
         return tmp;
       }, 1, this);
-      console.log('docProb:',docProb)
+      // console.log('docProb:',docProb)
       // the probability this doc is in this category
       probs[cat] = catProb * docProb;
     }, this);
-    console.log('probs:',probs);
+    // console.log('probs:',probs);
     return probs;
   },
 
-  getProbs : function(doc, callback) {    
+  getProbs : function(doc, callback) {
+    console.log('getProb() ===')
     var that = this;
     var tmp = this.getCats(function(cats) {
       var words = that.getWords(doc);      
@@ -235,12 +236,14 @@ window.Bayesian.prototype = {
 
   getProbsSync : function(doc) {
     console.log('getProbsSync :')
+    console.log('var words = this.getWords(doc);');
     var words = this.getWords(doc);
+    console.log('var cats = this.getCats();');
     var cats = this.getCats();
-    console.log("cats :",cats)
+    // console.log("cats :",cats)
     var counts = this.getWordCounts(words, cats);
     // var counts = this.getWordCounts(doc, cats);
-    console.log("count : ",counts)
+    // console.log("count : ",counts)
     // return this.getCatProbs(cats, doc, counts);
     return this.getCatProbs(cats, words, counts);
   },
@@ -276,6 +279,7 @@ window.Bayesian.prototype = {
   },
 
   classifySync : function(doc) {
+    console.log('classifySync : function(doc): ',doc);
     var probs = this.getProbsSync(doc);
     console.log('classifySync - probs : ',probs);
     return probs;
