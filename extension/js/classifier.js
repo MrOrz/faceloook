@@ -26,9 +26,9 @@ LocalStorageBackend.prototype = {
   async : false,
 
   getCats : function() {
-    console.log('getCats line29');
-    console.log('this.storage[this.prefix + ".cats" ]');
-    console.log(this.storage[this.prefix + '.cats']);
+    // console.log('getCats line29');
+    // console.log('this.storage[this.prefix + ".cats" ]');
+    // console.log(this.storage[this.prefix + '.cats']);
     return JSON.parse(this.storage[this.prefix + '.cats']);
   },
 
@@ -37,7 +37,7 @@ LocalStorageBackend.prototype = {
   },
 
   getWordCount : function(word) {
-    console.log('getWordCount')
+    // console.log('getWordCount')
     return JSON.parse(this.storage[this.prefix + '.words.' + word] || '{}');
   },
 
