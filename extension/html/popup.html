@@ -7,9 +7,13 @@
   <script type="text/javascript" src="../js/jquery.min.js"></script>
   <script type="text/javascript" src="../js/db.js"></script>
 </head>
-<body>
-  Access token: <input type="text" name="" id="access_token">
-  <table class="clicked">
+<body>  
+  <form action="form_action.asp">
+    <input type="text" name="key" value="" id="access_token"/><br />  
+    <input type="submit" value="Search" />
+  </form>
+
+  <!-- <table class="clicked">
     <caption>Clicked Facebook posts</caption>
     <thead>
       <th>facebook id</th>
@@ -24,7 +28,9 @@
       <th>timestamp</th>
     </thead>
     <tbody></tbody>
-  </table>
+  </table> -->
+
+
   <script type="text/javascript" src="../js/popup.js"></script>
 </body>
 </html>

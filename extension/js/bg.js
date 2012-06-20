@@ -164,6 +164,8 @@ var bayes = new Bayesian({
       // console.log('train,from: ',v['from']);
       // console.log('train,clicked: ',v['rowData']['clicked']);
       // var tmp = {input:v.,output:data.}
+      var clickTime = new Date(v.rowData.updated_at)
+      var now = new Date();
       if(v.message !=''){
         bayes.train(v.message,v.rowData.clicked);        
         bayes.train(v.from,v.rowData.clicked);

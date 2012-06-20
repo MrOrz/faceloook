@@ -31,13 +31,16 @@
     }
   );
 
-  $('table').on('click', 'a', function(e){
-    e.preventDefault();
-    var fbid = $(this).text();
-    $.getJSON('https://graph.facebook.com/' + fbid, {
-      access_token: $access_token.val()
-    }, function(data){
-      alert(data.from.name + ': ' + data.message);
-    })
-  });
+  // $('table').on('click', 'a', function(e){
+  //   e.preventDefault();
+  //   var fbid = $(this).text();
+  //   $.getJSON('https://graph.facebook.com/' + fbid, {
+  //     access_token: $access_token.val()
+  //   }, function(data){
+  //     alert(data.from.name + ': ' + data.message);
+  //   })
+  // });
+
+  
+
 }());
