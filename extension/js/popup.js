@@ -41,6 +41,16 @@
   //   })
   // });
 
+
+  /*GET(src, function(){})
+  src 可以是 facebook id 的陣列
+  function(data){ } 拿到的會是斷詞過後的結果*/
+  $('#searchform').on('submit',function(e){
+    e.preventDefault();
+    console.log('click search!');
+    alert('lalala');
+  });
+  
   
 
 }());

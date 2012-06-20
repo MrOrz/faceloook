@@ -33,7 +33,8 @@
       "js/fb.js",
       "js/process.js",
       "js/db.js",
-      "js/bg.js"
+      "js/bg.js",
+      "js/popup.js"
     ]
   }
 }

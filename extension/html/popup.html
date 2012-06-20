@@ -6,11 +6,13 @@
   <link rel="stylesheet" href="../css/popup.css">
   <script type="text/javascript" src="../js/jquery.min.js"></script>
   <script type="text/javascript" src="../js/db.js"></script>
+  <script type="text/javascript" src="../js/popup.js"></script>
 </head>
-<body>  
-  <form action="form_action.asp">
-    <input type="text" name="key" value="" id="access_token"/><br />  
-    <input type="submit" value="Search" />
+<body>
+  search:
+  <form id='searchform'>
+  <input type='text' id='input' />
+  <input type='button' id='search' value='submit' />
   </form>
 
   <!-- <table class="clicked">
@@ -31,6 +33,5 @@
   </table> -->
 
 
-  <script type="text/javascript" src="../js/popup.js"></script>
 </body>
 </html>
