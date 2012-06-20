@@ -85,6 +85,7 @@
 
       // normalize the arguments
       if($.isFunction(data)){
+        failCallback = successCallback;
         successCallback = data;
         data = {};
       }
