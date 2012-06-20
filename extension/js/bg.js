@@ -1,4 +1,11 @@
 /*global chrome, FB, DB, _, CAS */
+var bayes = new Bayesian({
+  backend:{
+    options : {
+      name : 'japie'
+    }
+  }
+});
 
 (function(chrome, undefined){
   "use strict";
@@ -114,6 +121,7 @@
           // invoke callback and proceed to the next BATCH_COUNT items.
           batch(buffer).done(function(processedData){
             console.log('First ', i, ' items are processed.', processedData);
+            //callback(processedData);
             _(callback).defer(processedData); // heavy-lifting
           }).fail(function(){
             console.error('Batch processing failed: ', arguments);
@@ -149,7 +157,31 @@
         }, ...
       }
     */
-    console.log('Data received by processData: ', data);
-    DB.trainedAll(_(data).pluck('id'))
+    
+    // console.log('Data received by processData: ', data);
+    $.each(data,function(k,v){
+      // console.log('train,msg: ',v['message']);
+      // console.log('train,from: ',v['from']);
+      // console.log('train,clicked: ',v['rowData']['clicked']);
+      // var tmp = {input:v.,output:data.}
+      var clickTime = new Date(v.rowData.updated_at)
+      var now = new Date();
+      if(v.message !=''){
+        bayes.train(v.message,v.rowData.clicked);        
+        bayes.train(v.from,v.rowData.clicked);
+        if(v.groupId!='')
+          bayes.train(v.groupId,v.rowData.clicked);
+      }
+    });
+    // DB.trainedAll(_(data).pluck('id'));
+    // bayes.train(data);
   });
+  
+
 }(chrome));
+
+
+function testC(msg){
+  var category = bayes.classify(msg);   // "spam"
+  console.log('category: ',category);
+};
