@@ -46,6 +46,7 @@ LocalStorageBackend.prototype = {
   },
 
   getWordCounts : function(words) {
+    console.log('getWordCounts');
     var counts = {};
     words.forEach(function(word) {
       counts[word] = this.getWordCount(word);
@@ -133,10 +134,17 @@ window.Bayesian.prototype = {
   },
 
   getWords : function(doc) {
+    console.log('==== getWords() === ');
+    console.log('doc: ',doc);
     if (_(doc).isArray()) {
+      console.log('_(doc).isArray() , return doc ');
       return doc;
     }
-    var words = doc.split(/\W+/);
+    //why this line cannot be done well ?
+    // var words = doc.split(/\W+/);
+    var words = doc.split(" ");    
+    console.log('words: ',words)
+    console.log('return _(words).uniq() : ' , _(words).uniq());
     return _(words).uniq();
   },
 
@@ -231,7 +239,9 @@ window.Bayesian.prototype = {
     var cats = this.getCats();
     console.log("cats :",cats)
     var counts = this.getWordCounts(words, cats);
+    // var counts = this.getWordCounts(doc, cats);
     console.log("count : ",counts)
+    // return this.getCatProbs(cats, doc, counts);
     return this.getCatProbs(cats, words, counts);
   },
 
