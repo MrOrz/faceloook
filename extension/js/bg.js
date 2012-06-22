@@ -3,15 +3,6 @@
 (function(chrome, undefined){
   "use strict";
 
-  // Initialize bayes classifier instance.
-  var bayes = new Bayesian({
-    backend:{
-      options : {
-        name : 'japie'
-      }
-    }
-  });
-
   // Chrome extension listener
   chrome.extension.onRequest.addListener(function(request){
     var fbid;
@@ -55,29 +46,12 @@
     */
 
     // console.log('Data received by processData: ', data);
-    $.each(data,function(k,v){
-      // console.log('train,msg: ',v['message']);
-      // console.log('train,from: ',v['from']);
-      // console.log('train,clicked: ',v['rowData']['clicked']);
-      // var tmp = {input:v.,output:data.}
-      var clickTime = new Date(v.rowData.updated_at)
-      var now = new Date();
-      if(v.message !==''){
-        bayes.train(v.message,v.rowData.clicked);
-        bayes.train(v.from,v.rowData.clicked);
-        if(v.groupId!==''){
-          bayes.train(v.groupId,v.rowData.clicked);
-        }
-      }
-    });
-    // DB.trainedAll(_(data).pluck('id'));
-    // bayes.train(data);
+
+    BAYES.trainObj(data);
   });
 
 
-  window.testC = function(msg){
-    var category = bayes.classify(msg);   // "spam"
-    console.log('category: ',category);
-  };
+
 }(chrome));
+
 

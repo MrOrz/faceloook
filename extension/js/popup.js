@@ -62,62 +62,21 @@
     //   function(data,status){
     //     console.log('data: ',data)
     //   });
-    FB.get('me/home', {q:input,limit:2}, function(data){
+    FB.get('me/home', {q:input,limit:15}, function(data){
       var itemsToTokenize = {};
+      var item = {};
+      var itemsAfterTokenize = {};
       console.log('FB.get,data: ',data);
       
-      $.each(data.data,function(k,v){
-        // console.log('k: ',k);
-        // console.log('v: ',v);
-
-        itemsToTokenize[this.id] = {
-          message : this.message || "",
-          link : this.link || "",
-          linkName : this.name || "",
-          linkDesct : this.description || "",
-          caption : this.caption || ""
-        };
-      
-        // lists[v.type].append('<div>'+v+'</div>');
-      });
-
-      CAS(itemsToTokenize, function(tokenized){
-        console.log('CAS, tokenized: ',tokenized);
-        //get prob from classifier w/
-        var bayes = new Bayesian({
-          backend:{
-            options : {
-              name : 'japie'
-            }
-          }
+      BAYES.getCASProb(data.data,function(sortToken){
+        console.log(sortToken);
+        $.each(sortToken,function(k,v){
+          console.log('v:',v);
+          lists[v.type].append('<div>' + v.message + '</div>');
         });
-        console.log('tokenized: ',tokenized);
-        $.each(tokenized,function(k,v){
-          var thismsg = {};
-          console.log('v',v);
-          var totalmsg = "";
-          $.each(v,function(k,msg){
-            if(msg!=''){
-              totalmsg = totalmsg + msg
-            }
-          });
-          console.log('totalmsg: ',totalmsg);
-          var category = bayes.classify(totalmsg);
-          console.log('category: ',category);
-          // $.extend(true,,thismsg,category);
-          // // thismsg.append(category);
-          // console.log('thismsg: ',thismsg);
-          v.prob = category;
-        });
-        console.log('tokenized: ',tokenized);
-      }).fail(function(){
-        console.log('CAS fails!')
       });
-
-      // var ret = $.extend(true, {}, items, tokenized);
-
+    
     });
-
   });
   
   

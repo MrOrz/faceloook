@@ -29,6 +29,7 @@
       "js/jquery.min.js",
       "js/underscore.min.js",
       "js/classifier.js",
+      "js/bayes.js",
       "js/cas.js",
       "js/fb.js",
       "js/process.js",

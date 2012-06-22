@@ -77,3 +77,28 @@ th, td {
   border: 1px solid #ccc;
   padding: .3em .5em;
 }
+
+/* line 21, ../sass/popup.scss */
+.status {
+  border: 1px solid red;
+}
+
+/* line 24, ../sass/popup.scss */
+.photo {
+  border: 1px solid orange;
+}
+
+/* line 27, ../sass/popup.scss */
+.link {
+  border: 1px solid green;
+}
+
+/* line 30, ../sass/popup.scss */
+.video {
+  border: 1px solid blue;
+}
+
+/* line 33, ../sass/popup.scss */
+.checkin {
+  border: 1px solid yellow;
+}

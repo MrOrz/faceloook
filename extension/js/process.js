@@ -40,7 +40,9 @@
           message : this.message || "",
           link : this.link || "",
           linkName : this.name || "",
-          linkDesct : this.description || ""
+          linkDesct : this.description || "",
+          caption : this.caption || "",
+          type : 'TYPE' + this.type
         };
 
         // Group message detection
