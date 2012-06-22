@@ -14,7 +14,7 @@
 
   // Chrome extension listener
   chrome.extension.onRequest.addListener(function(request, sender, resp){
-    var fbid;
+    var fbid, isInterested = {};
     switch(request.type){
 
       // Insert new record into database
@@ -34,7 +34,6 @@
       // Test if user is interested in a bunch of stories.
       case "query":
         GET(request.fbids, function(data){
-          var isInterested = {};
           _.each(data, function(item){
             if(_.isNumber(item.rowData.explicit)){
               isInterested[item.id] = item.rowData.explicit === 1;
@@ -42,9 +41,10 @@
               // TODO:
               // change this with classify result!
               isInterested[item.id] = Math.random() > 0.7;
+              //isInterested[item.id] = item.rowData.explicit || false;
             }
-            //isInterested[item.id] = item.rowData.explicit || false;
           })
+        }, function(){
           resp(isInterested);
         });
         break;

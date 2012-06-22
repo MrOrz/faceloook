@@ -138,7 +138,7 @@
   // GET(["418597748185325", "413420318696220"], function(processedData){ ... })
   // GET(DB.getUntrained, function(processedData){ ... })
   //
-  window.GET = function(src, callback){
+  window.GET = function(src, callback, allDoneCallback){
 
     // normalize the arguments
     var data;
@@ -172,6 +172,11 @@
             console.log('First ', i, ' items are processed.', processedData);
             if(!$.isEmptyObject(processedData)){
               _(callback).defer(processedData); // heavy-lifting
+            }
+
+            // All done! Trigger alldone callback if there is one
+            if(i === rows.length && allDoneCallback){
+              allDoneCallback();
             }
           }).fail(function(){
             console.error('Batch processing failed: ', arguments);
