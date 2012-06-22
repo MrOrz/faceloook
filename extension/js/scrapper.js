@@ -1,4 +1,4 @@
-/*global WebKitMutationObserver, chrome */
+/*global WebKitMutationObserver, chrome, _ */
 
 (function(chrome, undefined){
   "use strict";
@@ -37,6 +37,10 @@
     // https://www.facebook.com/<author>/activity/<id> : Game activity
     //
   ],
+  CLS = {
+    INTERESTED: "faceloook-interested",
+    UNINTERESTED: "faceloook-uninterested"
+  },
 
   markAsSeen = function(fbid){
     console.log('SEEN:', fbid);
@@ -51,6 +55,10 @@
 
     console.log('STORY', fbid, "clicked!");
   },
+  markInterested = function(fbid, val){
+    chrome.extension.sendRequest({ type: 'mark', fbid: fbid, interested: val});
+    console.log('INTEREST', fbid, val);
+  },
 
   // Process the story <li> with known facebook id.
   processStory = function($story, fbid){
@@ -63,10 +71,50 @@
         markAsClicked(fbid);
       }
     });
+
+    // Install "interested" markers
+    var $marker = $('<div class="faceloook-marker">★</div>').appendTo($story);
+    $marker.click(function(e){
+      if($story.hasClass(CLS.INTERESTED)){
+        $story.removeClass(CLS.INTERESTED).addClass(CLS.UNINTERESTED);
+        markInterested(fbid, false);
+      }else if($story.hasClass(CLS.UNINTERESTED)){
+        $story.removeClass(CLS.UNINTERESTED).addClass(CLS.INTERESTED);
+        markInterested(fbid, true);
+      }else{
+        console.error('Error toggling the marker');
+      }
+
+      // Do not set 'clicked' for the story
+      e.stopPropagation();
+    });
+  },
+
+  // Mark as interested or not.
+  // fbStories: {fbid: jQuery facebook story element}
+  markStories = function(fbStories){
+    var fbids = _.keys(fbStories);
+    chrome.extension.sendRequest({type: 'query', fbids: fbids},
+      function(isInterested){
+        console.log('QUERY RESULT', isInterested);
+        var invalidFBID = _(fbids).difference(_(isInterested).keys());
+        if(invalidFBID.length){
+          console.error('Invalid FBID : ', invalidFBID);
+        }
+        _.each(fbStories, function($story, fbid){
+          if(isInterested[fbid]){
+            $story.addClass(CLS.INTERESTED);
+          }else{
+            $story.addClass(CLS.UNINTERESTED);
+          }
+        });
+      });
   },
 
   // Extract data from all story <li>s.
   getStories = function(stories){
+    // fbid -> jQuery facebook story element
+    var fbStories = {};
     $(stories).each(function(){
 
       // Find all time link that contains <abbr>.
@@ -74,7 +122,8 @@
       // especially in facebook groups.
       var $story = $(this),
           $link = $story.find('.uiStreamSource a').has('abbr'),
-          href, match = null;
+          href, match = null,
+          fbid;
 
 
       // Extracting id.
@@ -96,7 +145,9 @@
 
         if(match){
           //console.log('STORY:', this, 'ID: ', match[1]);
-          processStory($story, match[1]);
+          fbid = match[1];
+          fbStories[fbid] = $story;
+          processStory($story, fbid);
         }else{
           console.log('STORY:', this, 'HREF: ', href);
         }
@@ -104,6 +155,8 @@
       }
 
     });
+
+    markStories(fbStories);
   };
 
   // Listening to the subtree change of #contentCol div.

@@ -13,7 +13,7 @@
   });
 
   // Chrome extension listener
-  chrome.extension.onRequest.addListener(function(request){
+  chrome.extension.onRequest.addListener(function(request, sender, resp){
     var fbid;
     switch(request.type){
 
@@ -25,11 +25,34 @@
       // Update "clicked"
       case "update":
         DB.clicked(request.fbid);
+        break;
 
+      case "mark":
+        DB.mark(request.fbid, request.interested);
+        break;
+
+      // Test if user is interested in a bunch of stories.
+      case "query":
+        GET(request.fbids, function(data){
+          var isInterested = {};
+          _.each(data, function(item){
+            if(_.isNumber(item.rowData.explicit)){
+              isInterested[item.id] = item.rowData.explicit === 1;
+            }else{
+              // TODO:
+              // change this with classify result!
+              isInterested[item.id] = Math.random() > 0.7;
+            }
+            //isInterested[item.id] = item.rowData.explicit || false;
+          })
+          resp(isInterested);
+        });
         break;
     }
   });
 
+  // Train the untrained feeds
+  //
   GET(DB.getUntrained, function(data){
     /*
       data = {
@@ -73,7 +96,6 @@
     DB.trainedAll(_(data).pluck('id'));
     // bayes.train(data);
   });
-
 
   window.testC = function(msg){
     var category = bayes.classify(msg);   // "spam"

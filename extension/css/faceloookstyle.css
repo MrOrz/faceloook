@@ -1,0 +1,28 @@
+/* line 1, ../sass/faceloookstyle.scss */
+.faceloook-marker {
+  position: absolute;
+  right: 40px;
+  top: 0;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* line 9, ../sass/faceloookstyle.scss */
+.faceloook-interested, .faceloook-uninterested {
+  position: relative !important;
+}
+
+/* line 14, ../sass/faceloookstyle.scss */
+.faceloook-interested .faceloook-marker {
+  color: #cc0;
+}
+
+/* line 20, ../sass/faceloookstyle.scss */
+.faceloook-uninterested .faceloook-marker {
+  color: transparent;
+  -webkit-text-stroke: 1px #ccc;
+}
+/* line 23, ../sass/faceloookstyle.scss */
+.faceloook-uninterested .faceloook-marker:hover {
+  -webkit-text-stroke: 1px #999;
+}

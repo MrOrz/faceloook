@@ -1,4 +1,4 @@
-/*global DB */
+/*global DB, _ */
 (function(openDatabase, undefined){
   "use strict";
   var
@@ -63,6 +63,12 @@
       [fbid]);
   };
 
+  // mark explicit interest
+  DB.mark = function(fbid, isInterested){
+    console.info('explicitly set ', fbid, ' interested = ', isInterested);
+    DB("UPDATE entry SET explicit=? WHERE fbid=?;", [+isInterested, fbid]);
+  };
+
   // set fbids as trained
   DB.trainedAll = function(fbids){
     console.info('trained', fbids);
@@ -84,13 +90,14 @@
   // the callback(data) will get data in the form {fbid: object}
   //
   DB.getCache = function(fbids, callback){
-    DB("SELECT fbid, cache FROM entry WHERE fbid IN (" + fbids.join(',') + ")"+
+    DB("SELECT * FROM entry WHERE fbid IN (" + fbids.join(',') + ")"+
        "AND cache IS NOT NULL;",
     {}, function(tx, data){
-      var i, ret = {}, item;
+      var i, ret = {}, cachedData;
       for(i = 0; i < data.rows.length; i+=1){
-        item = JSON.parse(data.rows.item(i).cache);
-        ret[item.id] = item;
+        cachedData = JSON.parse(data.rows.item(i).cache);
+        cachedData.rowData = data.rows.item(i);
+        ret[cachedData.id] = cachedData;
       }
       if(! _.isEmpty(ret)){
         console.info("Cache hit : ", ret);

@@ -15,7 +15,11 @@
       "matches": ["*://www.facebook.com/*"],
       "js": [
         "js/jquery.min.js",
+        "js/underscore.min.js",
         "js/scrapper.js"
+      ],
+      "css": [
+        "css/faceloookstyle.css"
       ]
     }
   ],
