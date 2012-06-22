@@ -3,7 +3,7 @@
   "use strict";
   var
   DB_VERSION = '0.1',
-  DB_SIZE = 10 * 1024 * 1024, // 10MB database
+  DB_SIZE = 50 * 1024 * 1024, // 50MB database
   dfd = $.Deferred(), // deferred database initialization
   database = openDatabase('faceloook', DB_VERSION, 'faceloook database', DB_SIZE);
 
@@ -14,6 +14,7 @@
         'CREATE TABLE IF NOT EXISTS entry(' +
           'id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,' +
           'fbid TEXT NOT NULL,' +
+          'cache TEXT,' +
           'clicked INTEGER NOT NULL DEFAULT 0,' +
           'trained INTEGER NOT NULL DEFAULT 0,' +
           'explicit INTEGER,' +
@@ -58,7 +59,7 @@
   DB.clicked = function(fbid){
     console.info('updating', fbid);
     DB("INSERT OR REPLACE INTO entry (fbid, updated_at, clicked)" +
-      "values (?, datetime('now', 'localtime'), 1);",
+      "values(?, datetime('now', 'localtime'), 1);",
       [fbid]);
   };
 
@@ -79,5 +80,29 @@
     DB('DELETE FROM entry WHERE fbid IN (' + fbids.join(',') + ');');
   };
 
+  // Get cache from fbid array.
+  // the callback(data) will get data in the form {fbid: object}
+  //
+  DB.getCache = function(fbids, callback){
+    DB("SELECT fbid, cache FROM entry WHERE fbid IN (" + fbids.join(',') + ")"+
+       "AND cache IS NOT NULL;",
+    {}, function(tx, data){
+      var i, ret = {}, item;
+      for(i = 0; i < data.rows.length; i+=1){
+        item = JSON.parse(data.rows.item(i).cache);
+        ret[item.id] = item;
+      }
+
+      callback(ret);
+    });
+  };
+
+  // set cache
+  // should be in the form of {fbid: entire object to cache}
+  DB.cache = function(fbid, cacheItem){
+    console.info("Caching fbid =", fbid);
+    DB("INSERT OR REPLACE INTO entry (fbid, cache) " +
+       "VALUES (?, ?);", [fbid, JSON.stringify(cacheItem)]);
+  }
 
 }(window.openDatabase));
