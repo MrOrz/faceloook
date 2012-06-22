@@ -21,20 +21,17 @@
       processTokenized = function(items, tokenized){
         // merge items with tokenized items
         $.extend(true, items, tokenized);
-        _.each(items, function(obj){
+        _.each(items, function(obj, key){
           var fbid = FB.ID(obj.id);
           if( fbid ){
             DB.cache(fbid, obj);
+            // mixin rowData only when data is returned from CAS
+            items[key].rowData = rowData[fbid];
           }
         });
 
         // extend cached items with newly tokenized data
         $.extend(true, cached, items);
-
-        // mixin rowData only when data is returned from facebook
-        _.each(items, function(value, key){
-          cached[key].rowData = rowData[value.id];
-        });
         dfd.resolve(cached);
       },
 
@@ -112,6 +109,9 @@
       if(item.cache){
         // check cache from rows
         cached[item.fbid] = JSON.parse(item.cache);
+
+        // mix-in rowData if the row is already cached.
+        cached[item.fbid].rowData = item;
       }else{
         // no cache found in rows, put into fbids array
         fbids.push(item.fbid);
