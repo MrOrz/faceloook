@@ -22,6 +22,11 @@
         DB.insert(request.fbid);
         break;
 
+      // Update updated_at if not seen before
+      case "see":
+        DB.see(request.fbid);
+        break;
+
       // Update "clicked"
       case "update":
         DB.clicked(request.fbid);
@@ -40,14 +45,17 @@
             }else{
               // TODO:
               // change this with classify result!
-              isInterested[item.id] = Math.random() > 0.7;
-              //isInterested[item.id] = item.rowData.explicit || false;
+              //isInterested[item.id] =  Math.random() > 0.7;
+              isInterested[item.id] = item.rowData.clicked === 1;
             }
           })
         }, function(){
           resp(isInterested);
         });
         break;
+
+      default:
+        console.error('Invalid request type ', request.type);
     }
   });
 

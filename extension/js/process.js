@@ -15,10 +15,11 @@
       rowData = {}, // id -> database row data
       cached = {},  // id -> cached CAS result
 
-      // Step 3:
+      // Step 2:
       // Merge cached result with elements that do not need CAS, and CAS result.
       // put CAS results into cache.
       processTokenized = function(items, tokenized){
+
         // merge items with tokenized items
         $.extend(true, items, tokenized);
         _.each(items, function(obj, key){
@@ -30,12 +31,11 @@
           }
         });
 
-        // extend cached items with newly tokenized data
-        $.extend(true, cached, items);
-        dfd.resolve(cached);
+        // mixup cached items with newly tokenized data
+        dfd.resolve($.extend(true, cached, items));
       },
 
-      // Step 2:
+      // Step 1:
       // Process the result returned by FB.get.
       processFB = function(data){
         var items = {}, itemsToTokenize = {};
@@ -74,54 +74,40 @@
         CAS(itemsToTokenize, function(tokenized){
           processTokenized(items, tokenized);
         }).fail(function(){
+
           // CAS query fail, reject.
           dfd.reject(arguments);
         });
-      },
-
-      // Step 1:
-      // Process the result returned by DB cache.
-      // Do FB.get for cache-missed items
-      processCached = function(cacheData){
-        // Put queried cacheData into cached result.
-        $.extend(true, cached, cacheData);
-
-        // Determine the rest to be asked with Facebook
-        var fbidInCachedData = _(cacheData).keys().map(FB.ID),
-            fbidsToQuery = fbids.difference(fbidInCachedData);
-
-        if(fbidsToQuery.length > 0){
-          // Start querying FB
-          FB.get('', {ids: fbidsToQuery.join(',')}, processFB, function(){
-            // FB query fail, reject.
-            dfd.reject(arguments);
-          });
-        }else{
-          // Cache all-hit in the rowData. Process token immediately.
-          processTokenized({}, {});
-        }
       };
 
     _(rows).each(function(item){
-      // populate rowData, which will be inserted to result
-      rowData[item.fbid] = item;
-
       if(item.cache){
+
         // check cache from rows
         cached[item.fbid] = JSON.parse(item.cache);
 
         // mix-in rowData if the row is already cached.
         cached[item.fbid].rowData = item;
       }else{
+
         // no cache found in rows, put into fbids array
         fbids.push(item.fbid);
+
+        // populate rowData, which will be inserted after CAS
+        rowData[item.fbid] = item;
       }
     });
 
     if(! fbids.isEmpty()){
-      // Kick-start the 3-step process.
-      DB.getCache(fbids, processCached);
+
+      // Query facebook with the fbids array
+      FB.get('', {ids: fbids.join(',')}, processFB, function(){
+
+        // FB query fail, reject.
+        dfd.reject(arguments);
+      });
     }else{
+
       // Cache all-hit in the rowData. Process token immediately.
       processTokenized({}, {});
     }
@@ -141,16 +127,14 @@
   window.GET = function(src, callback, allDoneCallback){
 
     // normalize the arguments
-    var data;
+    var data, fbids;
     if($.isArray(src)){
-      // wrap the 'src' to mimic DB.get* interface,
-      // which invokes a callback(tx, rowData)
-      //
-      data = _(src).map(function(i){return {fbid: i}; });
-      data.item = function(i){return this[i]}; // DB row interface
+
+      // set the 'src' to DB.getByFBIDs
+      fbids = src;
       src = function(cb){
-        cb(null, {rows: data});
-      }
+        DB.getByFBIDs(fbids, cb);
+      };
     }
 
     // Invoke src function to get and process rows.

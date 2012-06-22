@@ -42,25 +42,35 @@
     });
   };
 
-  // select all untrained
+  // select all seen but untrained
   DB.getUntrained = function(callback){
-    DB('SELECT * FROM entry WHERE trained = 0;', {}, callback)
-  }
+    DB('SELECT * FROM entry WHERE trained = 0 AND updated_at IS NOT NULL;', {},
+     callback);
+  };
+
+  // Get all entries with FBID array
+  DB.getByFBIDs = function(fbids, callback){
+    DB("SELECT * FROM entry WHERE fbid IN (" + fbids.join(',') + ");",
+      [], callback);
+  };
 
   // new record in entry
   DB.insert = function(fbid){
     console.info('inserting', fbid);
-    DB("INSERT INTO entry (fbid, updated_at)" +
-     "values (?, datetime('now', 'localtime'));",
-      [fbid]);
+    DB("INSERT INTO entry (fbid) values (?);", [fbid]);
+  };
+
+  DB.see = function(fbid){
+    console.info('seeing', fbid);
+    DB("UPDATE entry SET updated_at=datetime('now', 'localtime') " +
+       "WHERE fbid=? AND updated_at IS NULL;", [fbid]);
   };
 
   // set as clicked
   DB.clicked = function(fbid){
     console.info('updating', fbid);
-    DB("INSERT OR REPLACE INTO entry (fbid, updated_at, clicked)" +
-      "values(?, datetime('now', 'localtime'), 1);",
-      [fbid]);
+    DB("UPDATE entry SET updated_at=datetime('now', 'localtime'), clicked=1 " +
+       "WHERE fbid=?;", [fbid]);
   };
 
   // mark explicit interest
@@ -84,26 +94,6 @@
   DB.deleteAll = function(fbids){
     console.info('deleting', fbids);
     DB('DELETE FROM entry WHERE fbid IN (' + fbids.join(',') + ');');
-  };
-
-  // Get cache from fbid array.
-  // the callback(data) will get data in the form {fbid: object}
-  //
-  DB.getCache = function(fbids, callback){
-    DB("SELECT * FROM entry WHERE fbid IN (" + fbids.join(',') + ")"+
-       "AND cache IS NOT NULL;",
-    {}, function(tx, data){
-      var i, ret = {}, cachedData;
-      for(i = 0; i < data.rows.length; i+=1){
-        cachedData = JSON.parse(data.rows.item(i).cache);
-        cachedData.rowData = data.rows.item(i);
-        ret[cachedData.id] = cachedData;
-      }
-      if(! _.isEmpty(ret)){
-        console.info("Cache hit : ", ret);
-      }
-      callback(ret);
-    });
   };
 
   // set cache

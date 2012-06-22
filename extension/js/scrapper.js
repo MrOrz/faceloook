@@ -39,29 +39,37 @@
   ],
   CLS = {
     INTERESTED: "faceloook-interested",
-    UNINTERESTED: "faceloook-uninterested"
+    UNINTERESTED: "faceloook-uninterested",
+    INVALID: "faceloook-invalid"
   },
 
+  // update udpated_at if not seen before
   markAsSeen = function(fbid){
     console.log('SEEN:', fbid);
-    // insert row into backend
-    chrome.extension.sendRequest({ type: 'insert', fbid: fbid });
+    chrome.extension.sendRequest({ type: 'see', fbid: fbid });
 
     delete storiesNotShown[fbid];
   },
+
+  // update clicked if not seen before
   markAsClicked = function(fbid){
-    // insert into or update into backend
-    chrome.extension.sendRequest({ type: 'update', fbid: fbid });
+    chrome.extension.sendRequest({type: 'update', fbid: fbid});
 
     console.log('STORY', fbid, "clicked!");
   },
+
+  // mark as interested
   markInterested = function(fbid, val){
-    chrome.extension.sendRequest({ type: 'mark', fbid: fbid, interested: val});
+    chrome.extension.sendRequest({type: 'mark', fbid: fbid, interested: val});
     console.log('INTEREST', fbid, val);
   },
 
   // Process the story <li> with known facebook id.
   processStory = function($story, fbid){
+
+    // Try inserting the story into database
+    chrome.extension.sendRequest({type: 'insert', fbid: fbid});
+
     // Push into scroll-event checking queue.
     storiesNotShown[fbid] = $story;
 
@@ -102,10 +110,12 @@
           console.error('Invalid FBID : ', invalidFBID);
         }
         _.each(fbStories, function($story, fbid){
-          if(isInterested[fbid]){
+          if(isInterested[fbid] === true){
             $story.addClass(CLS.INTERESTED);
-          }else{
+          }else if(isInterested[fbid] === false){
             $story.addClass(CLS.UNINTERESTED);
+          }else{
+            $story.addClass(CLS.INVALID);
           }
         });
       });
@@ -210,4 +220,7 @@
     subtree: true, childList: true
   });
   getStories($('.uiStreamStory'));
+
+  // Trigger scroll handler
+  $window.trigger('scroll');
 }(chrome));
