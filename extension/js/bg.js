@@ -70,7 +70,7 @@
         }
       }
     });
-    // DB.trainedAll(_(data).pluck('id'));
+    DB.trainedAll(_(data).pluck('id'));
     // bayes.train(data);
   });
 

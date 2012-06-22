@@ -1,73 +1,130 @@
-/*global chrome, CAS, FB, _ */
+/*global chrome, CAS, FB, _, DB */
 (function(CAS, FB, undefined){
   "use strict";
 
   var BATCH_COUNT = 10,
 
   // Batch processing the data in database rows.
-  // First it asks FB to get the items needed,
+  // First it queries the cache,
+  // then it asks FB to get the items needed,
   // then it consults CAS to get tokenized text features.
   batch = function(rows){
     var
       dfd = $.Deferred(),
-      fbids = _(rows).pluck('fbid'),
-      rowData = {}; // id -> database row data
+      fbids = _([]),   // FB IDs to query
+      rowData = {}, // id -> database row data
+      cached = {},  // id -> cached CAS result
 
-    _(rows).each(function(item){
-      rowData[item.fbid] = item;
-    });
-
-    // Start querying FB
-    FB.get('', {ids: fbids.join(',')}, function(data){
-      var items = {}, itemsToTokenize = {};
-
-      if(data.length === 0 || $.isEmptyObject(data)){
-        dfd.resolve({});
-        return;
-      }
-
-      // Split item properties into 2 categories:
-      // those to be tokenized, and those that are not.
-      $.each(data, function(){
-        items[this.id] = {
-          id : this.id,
-          groupId : '',
-          from : this.from.id,
-          updated : this.updated_time || this.created_time
-        };
-
-        itemsToTokenize[this.id] = {
-          message : this.message || "",
-          link : this.link || "",
-          linkName : this.name || "",
-          linkDesct : this.description || ""
-        };
-
-        // Group message detection
-        var tokens = this.id.split('_');
-        if(tokens.length === 2){
-          items[this.id].groupId = tokens[0];
-          items[this.id].id = tokens[1];
-        }
-      });
-
-      CAS(itemsToTokenize, function(tokenized){
+      // Step 3:
+      // Merge cached result with elements that do not need CAS, and CAS result.
+      // put CAS results into cache.
+      processTokenized = function(items, tokenized){
         // merge items with tokenized items
-        var ret = $.extend(true, {}, items, tokenized);
+        $.extend(true, items, tokenized);
+        _.each(items, function(obj){
+          var fbid = FB.ID(obj.id);
+          if( fbid ){
+            DB.cache(fbid, obj);
+          }
+        });
+
+        // extend cached items with newly tokenized data
+        $.extend(true, cached, items);
 
         // mixin rowData only when data is returned from facebook
-        _(ret).each(function(value, key){
-          ret[key].rowData = rowData[value.id];
+        _.each(cached, function(value, key){
+          cached[key].rowData = rowData[value.id];
         });
-        dfd.resolve(ret);
-      }).fail(function(){
-        // CAS query fail, reject.
-        dfd.reject(arguments);
-      });
-    }, function(){
-      // FB query fail, reject.
-      dfd.reject(arguments);
+        dfd.resolve(cached);
+      },
+
+      // Step 2:
+      // Process the result returned by FB.get.
+      processFB = function(data){
+        var items = {}, itemsToTokenize = {};
+
+        if(data.length === 0 || $.isEmptyObject(data)){
+          dfd.resolve({});
+          return;
+        }
+
+        // Split item properties into 2 categories:
+        // those to be tokenized, and those that are not.
+        $.each(data, function(){
+          items[this.id] = {
+            id : this.id,
+            groupId : '',
+            from : this.from.id,
+            type: this.type || "",
+            updated : this.updated_time || this.created_time
+          };
+
+          itemsToTokenize[this.id] = {
+            message : this.message || "",
+            link : this.link || "",
+            linkName : this.name || "",
+            linkDesct : this.description || ""
+          };
+
+          // Group message detection
+          var tokens = this.id.split('_');
+          if(tokens.length === 2){
+            items[this.id].groupId = tokens[0];
+            items[this.id].id = tokens[1];
+          }
+        });
+
+        CAS(itemsToTokenize, function(tokenized){
+          processTokenized(items, tokenized);
+        }).fail(function(){
+          // CAS query fail, reject.
+          dfd.reject(arguments);
+        });
+      },
+
+      // Step 1:
+      // Process the result returned by DB cache.
+      // Do FB.get for cache-missed items
+      processCached = function(cacheData){
+        // Put queried cacheData into cached result.
+        $.extend(true, cached, cacheData);
+
+        // Determine the rest to be asked with Facebook
+        var fbidInCachedData = _(cacheData).keys().map(FB.ID),
+            fbidsToQuery = fbids.difference(fbidInCachedData);
+
+        if(fbidsToQuery.length > 0){
+          // Start querying FB
+          FB.get('', {ids: fbidsToQuery.join(',')}, processFB, function(){
+            // FB query fail, reject.
+            dfd.reject(arguments);
+          });
+        }else{
+          // Cache all-hit in the rowData. Process token immediately.
+          processTokenized({}, {});
+        }
+      };
+
+    _(rows).each(function(item){
+      // populate rowData, which will be inserted to result
+      rowData[item.fbid] = item;
+
+      if(item.cache){
+        // check cache from rows
+        cached[item.fbid] = JSON.parse(item.cache);
+      }else{
+        // no cache found in rows, put into fbids array
+        fbids.push(item.fbid);
+      }
     });
+
+    if(! fbids.isEmpty()){
+      // Kick-start the 3-step process.
+      DB.getCache(fbids, processCached);
+    }else{
+      // Cache all-hit in the rowData. Process token immediately.
+      processTokenized({}, {});
+    }
 
     // Return dfd.
     return dfd.promise();

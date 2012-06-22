@@ -81,7 +81,7 @@
     // Check if a string is in a form of facebook ID.
     // If so, return the facebook id.
     // else, return false.
-    _FBID: function(str){
+    ID: function(str){
       // normalize str if the ID is GROUPID_FBID
       str = str.split('_').slice(-1)[0];
 
@@ -90,32 +90,6 @@
     },
 
     // Send GET requests to facebook graph API.
-    _queryFB: function(url, data, successCallback, failCallback){
-      return $.getJSON(API_URL + url, $.extend({
-        access_token: localStorage.accessToken
-      }, data), function(data){
-        successCallback(data);
-      }).fail(function(jqXHR){
-        if(jqXHR.responseText){
-          var err = $.parseJSON(jqXHR.responseText).error;
-          console.error('Error while requesting "'+url+'" : ', err);
-
-          // Check if access token is invalid (error code 190).
-          // If so, clean up access token and try again.
-          if(err.code === 190){
-            delete localStorage.accessToken;
-            FB.get(url, data, successCallback, failCallback);
-          } else if (failCallback) {
-            failCallback(arguments);
-          }
-        }
-        if (failCallback){
-          failCallback(arguments);
-        }
-      });
-    },
-
-    // Get item from cache, or send GET requests to facebook graph API.
     // Usage: FB.get('me/feed', function(data){...})
     //        FB.get('me/feed', {limit:10}, function(data){...})
     get: function(url, data, successCallback, failCallback){
@@ -127,71 +101,44 @@
         data = {};
       }
 
-      // The main process for this function
-      var process = function(){
-        // If no access token
-        if(!localStorage.accessToken){
-          // Retry after logged in
-          FB.subscribe('loggedIn', function retry(){
-            FB.get(url, data, successCallback, failCallback);
-            FB.unsubscribe('loggedIn', retry);
-          });
-          // trigger login
-          FB.login();
-        }
-
-        // If has access token, send query via ajax
-        else {
-          FB._queryFB(url, data, successCallback, failCallback)
-            .done(function(data){
-              // Put data into cache if it matches FB post
-              _(data).each(function(obj, key){
-                var fbid = FB._FBID(obj.id);
-                if( fbid ){
-                  DB.cache(fbid, obj);
-                }
-              });
-            });
-        }
+      // If no access token
+      if(!localStorage.accessToken){
+        // Retry after logged in
+        FB.subscribe('loggedIn', function retry(){
+          FB.get(url, data, successCallback, failCallback);
+          FB.unsubscribe('loggedIn', retry);
+        });
+        // trigger login
+        FB.login();
       }
 
-      // Query cache first
-      var fbids = [];
-      if($.isEmptyObject(data) && this._FBID(url)){
-        fbids.push( url );
-      }
-      if(data.ids){
-        fbids = fbids.concat( data.ids.split(',') );
-      }
-      // If it is a process that can be cached, query the cache first
-      if(fbids){
-        DB.getCache(fbids, function(cached){
-          // first commit(?) the cached data to successCakllback
-          if(! $.isEmptyObject(cached)){
-            console.info('Cache hit: ', cached);
-            successCallback(cached);
-          }
+      // If has access token, send query via ajax
+      else {
+        $.getJSON(API_URL + url, $.extend({
+          access_token: localStorage.accessToken
+        }, data), function(data){
+          successCallback(data);
+        }).fail(function(jqXHR){
+          if(jqXHR.responseText){
+            var err = $.parseJSON(jqXHR.responseText).error;
+            console.error('Error while requesting "'+url+'" : ', err);
 
-          // Remove cached data from fbids
-          fbids = _(fbids).difference(_(cached).keys());
-
-          // If there are still objects not cached
-          if(fbids.length){
-            // append 'cached' afterwards
-            if(data.ids){
-              data.ids = fbids.join(',');
+            // Check if access token is invalid (error code 190).
+            // If so, clean up access token and try again.
+            if(err.code === 190){
+              delete localStorage.accessToken;
+              FB.get(url, data, successCallback, failCallback);
+            } else if (failCallback) {
+              failCallback(arguments);
             }
-            process();
+          }
+          if (failCallback){
+            failCallback(arguments);
           }
         });
-      }else{
-        // Directly execute the process if it is the kind of request
-        // that cannot be cached.
-        process();
       }
 
       return FB; // enable chaining
     }
   };
-
 }(chrome));

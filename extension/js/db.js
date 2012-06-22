@@ -92,7 +92,7 @@
         item = JSON.parse(data.rows.item(i).cache);
         ret[item.id] = item;
       }
-
+      console.info("Cache hit : ", ret);
       callback(ret);
     });
   };
