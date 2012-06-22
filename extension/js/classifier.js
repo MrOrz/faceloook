@@ -19,7 +19,7 @@ var LocalStorageBackend = function(options) {
     this.storage = localStorage;
   }
 
-  this.storage[this.prefix + '.cats'] = '{}';
+  this.storage[this.prefix + '.cats'] = this.storage[this.prefix + '.cats'] || '{}';
 }
 
 LocalStorageBackend.prototype = {
@@ -34,6 +34,7 @@ LocalStorageBackend.prototype = {
   },
 
   setCats : function(cats) {
+    // console.log('setCats, JSON.stringify(cats) : ',JSON.stringify(cats));
     this.storage[this.prefix + '.cats'] = JSON.stringify(cats);
   },
 
@@ -168,20 +169,20 @@ window.Bayesian.prototype = {
   },
 
   wordProb : function(word, cat, cats, counts) {
-    console.log('======function wordProb:======');
+    // console.log('======function wordProb:======');
     // times word appears in a doc in this cat / docs in this cat    
     var prob = (counts[cat] || 0) / cats[cat];
-    console.log('prob: ',prob);
+    // console.log('prob: ',prob);
     // get weighted average with assumed so prob won't be extreme on rare words
     var total = _(cats).reduce(function(sum, p, cat) {
-      console.log('sum- ',sum);
+      // console.log('sum- ',sum);
       return sum + (counts[cat] || 0);
     }, 0, this);
-    console.log('total:',total);
-    console.log('this.weight: ',this.weight);
-    console.log('this.assumed: ',this.assumed);
-    console.log('(this.weight * this.assumed + total * prob) / (this.weight + total) : ');
-    console.log((this.weight * this.assumed + total * prob) / (this.weight + total));
+    // console.log('total:',total);
+    // console.log('this.weight: ',this.weight);
+    // console.log('this.assumed: ',this.assumed);
+    // console.log('(this.weight * this.assumed + total * prob) / (this.weight + total) : ');
+    // console.log((this.weight * this.assumed + total * prob) / (this.weight + total));
     return (this.weight * this.assumed + total * prob) / (this.weight + total);
   },
 
@@ -238,14 +239,20 @@ window.Bayesian.prototype = {
     console.log('getProbsSync :')
     console.log('var words = this.getWords(doc);');
     var words = this.getWords(doc);
+    console.log('words:',words);
     console.log('var cats = this.getCats();');
     var cats = this.getCats();
-    // console.log("cats :",cats)
+    console.log("cats :",cats)
+    console.log('var counts = this.getWordCounts(words, cats);');
     var counts = this.getWordCounts(words, cats);
+    console.log('counts: ', counts);
     // var counts = this.getWordCounts(doc, cats);
     // console.log("count : ",counts)
     // return this.getCatProbs(cats, doc, counts);
-    return this.getCatProbs(cats, words, counts);
+    console.log('return this.getCatProbs(cats, words, counts);')
+    var tmp = this.getCatProbs(cats, words, counts);
+    console.log('this.getCatProbs(cats, words, counts): ',tmp);
+    return tmp;
   },
 
   bestMatch : function(probs) {
