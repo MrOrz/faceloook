@@ -32,7 +32,7 @@
         $.extend(true, cached, items);
 
         // mixin rowData only when data is returned from facebook
-        _.each(cached, function(value, key){
+        _.each(items, function(value, key){
           cached[key].rowData = rowData[value.id];
         });
         dfd.resolve(cached);
@@ -44,7 +44,7 @@
         var items = {}, itemsToTokenize = {};
 
         if(data.length === 0 || $.isEmptyObject(data)){
-          dfd.resolve({});
+          processTokenized({}, {});
           return;
         }
 
