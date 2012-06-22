@@ -1,9 +1,9 @@
-/*global DB */
+/*global DB, _ */
 (function(openDatabase, undefined){
   "use strict";
   var
   DB_VERSION = '0.1',
-  DB_SIZE = 10 * 1024 * 1024, // 10MB database
+  DB_SIZE = 50 * 1024 * 1024, // 50MB database
   dfd = $.Deferred(), // deferred database initialization
   database = openDatabase('faceloook', DB_VERSION, 'faceloook database', DB_SIZE);
 
@@ -14,6 +14,7 @@
         'CREATE TABLE IF NOT EXISTS entry(' +
           'id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,' +
           'fbid TEXT NOT NULL,' +
+          'cache TEXT,' +
           'clicked INTEGER NOT NULL DEFAULT 0,' +
           'trained INTEGER NOT NULL DEFAULT 0,' +
           'explicit INTEGER,' +
@@ -41,25 +42,41 @@
     });
   };
 
-  // select all untrained
+  // select all seen but untrained
   DB.getUntrained = function(callback){
-    DB('SELECT * FROM entry WHERE trained = 0;', {}, callback)
-  }
+    DB('SELECT * FROM entry WHERE trained = 0 AND updated_at IS NOT NULL;', {},
+     callback);
+  };
+
+  // Get all entries with FBID array
+  DB.getByFBIDs = function(fbids, callback){
+    DB("SELECT * FROM entry WHERE fbid IN (" + fbids.join(',') + ");",
+      [], callback);
+  };
 
   // new record in entry
   DB.insert = function(fbid){
     console.info('inserting', fbid);
-    DB("INSERT INTO entry (fbid, updated_at)" +
-     "values (?, datetime('now', 'localtime'));",
-      [fbid]);
+    DB("INSERT INTO entry (fbid) values (?);", [fbid]);
+  };
+
+  DB.see = function(fbid){
+    console.info('seeing', fbid);
+    DB("UPDATE entry SET updated_at=datetime('now', 'localtime') " +
+       "WHERE fbid=? AND updated_at IS NULL;", [fbid]);
   };
 
   // set as clicked
   DB.clicked = function(fbid){
     console.info('updating', fbid);
-    DB("INSERT OR REPLACE INTO entry (fbid, updated_at, clicked)" +
-      "values (?, datetime('now', 'localtime'), 1);",
-      [fbid]);
+    DB("UPDATE entry SET updated_at=datetime('now', 'localtime'), clicked=1 " +
+       "WHERE fbid=?;", [fbid]);
+  };
+
+  // mark explicit interest
+  DB.mark = function(fbid, isInterested){
+    console.info('explicitly set ', fbid, ' interested = ', isInterested);
+    DB("UPDATE entry SET explicit=? WHERE fbid=?;", [+isInterested, fbid]);
   };
 
   // set fbids as trained
@@ -79,5 +96,12 @@
     DB('DELETE FROM entry WHERE fbid IN (' + fbids.join(',') + ');');
   };
 
+  // set cache
+  // should be in the form of {fbid: entire object to cache}
+  DB.cache = function(fbid, cacheItem){
+    console.info("Caching fbid =", fbid);
+    DB("INSERT OR REPLACE INTO entry (fbid, cache) " +
+       "VALUES (?, ?);", [fbid, JSON.stringify(cacheItem)]);
+  }
 
 }(window.openDatabase));

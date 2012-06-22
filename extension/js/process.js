@@ -1,75 +1,117 @@
-/*global chrome, CAS, FB, _ */
+/*global chrome, CAS, FB, _, DB */
 (function(CAS, FB, undefined){
   "use strict";
 
   var BATCH_COUNT = 10,
 
   // Batch processing the data in database rows.
-  // First it asks FB to get the items needed,
+  // First it queries the cache,
+  // then it asks FB to get the items needed,
   // then it consults CAS to get tokenized text features.
   batch = function(rows){
     var
       dfd = $.Deferred(),
-      fbids = _(rows).pluck('fbid'),
-      rowData = {}; // id -> database row data
+      fbids = _([]),   // FB IDs to query
+      rowData = {}, // id -> database row data
+      cached = {},  // id -> cached CAS result
+
+      // Step 2:
+      // Merge cached result with elements that do not need CAS, and CAS result.
+      // put CAS results into cache.
+      processTokenized = function(items, tokenized){
+
+        // merge items with tokenized items
+        $.extend(true, items, tokenized);
+        _.each(items, function(obj, key){
+          var fbid = FB.ID(obj.id);
+          if( fbid ){
+            DB.cache(fbid, obj);
+            // mixin rowData only when data is returned from CAS
+            items[key].rowData = rowData[fbid];
+          }
+        });
+
+        // mixup cached items with newly tokenized data
+        dfd.resolve($.extend(true, cached, items));
+      },
+
+      // Step 1:
+      // Process the result returned by FB.get.
+      processFB = function(data){
+        var items = {}, itemsToTokenize = {};
+
+        if(data.length === 0 || $.isEmptyObject(data)){
+          processTokenized({}, {});
+          return;
+        }
+
+        // Split item properties into 2 categories:
+        // those to be tokenized, and those that are not.
+        _.each(data, function(i){
+          items[i.id] = {
+            id : i.id,
+            groupId : '',
+            from : i.from.id,
+            type: 'TYPE' + i.type || "",
+            updated : i.updated_time || i.created_time
+          };
+
+          itemsToTokenize[i.id] = {
+            message : i.message || "",
+            link : i.link || "",
+            linkName : i.name || "",
+            linkDesct : i.description || "",
+            caption: i.caption || ""
+          };
+
+          // Group message detection
+          var tokens = i.id.split('_');
+          if(tokens.length === 2){
+            items[i.id].groupId = tokens[0];
+            items[i.id].id = tokens[1];
+          }
+        });
+
+        CAS(itemsToTokenize, function(tokenized){
+          processTokenized(items, tokenized);
+        }).fail(function(){
+
+          // CAS query fail, reject.
+          dfd.reject(arguments);
+        });
+      };
 
     _(rows).each(function(item){
-      rowData[item.fbid] = item;
+      if(item.cache){
+
+        // check cache from rows
+        cached[item.fbid] = JSON.parse(item.cache);
+
+        // mix-in rowData if the row is already cached.
+        cached[item.fbid].rowData = item;
+      }else{
+
+        // no cache found in rows, put into fbids array
+        fbids.push(item.fbid);
+
+        // populate rowData, which will be inserted after CAS
+        rowData[item.fbid] = item;
+      }
     });
 
-    // Start querying FB
-    FB.get('', {ids: fbids.join(',')}, function(data){
-      var items = {}, itemsToTokenize = {};
+    if(! fbids.isEmpty()){
 
-      if(data.length === 0 || $.isEmptyObject(data)){
-        dfd.resolve({});
-        return;
-      }
+      // Query facebook with the fbids array
+      FB.get('', {ids: fbids.join(',')}, processFB, function(){
 
-      // Split item properties into 2 categories:
-      // those to be tokenized, and those that are not.
-      $.each(data, function(){
-        items[this.id] = {
-          id : this.id,
-          groupId : '',
-          from : this.from.id,
-          updated : this.updated_time || this.created_time
-        };
-
-        itemsToTokenize[this.id] = {
-          message : this.message || "",
-          link : this.link || "",
-          linkName : this.name || "",
-          linkDesct : this.description || "",
-          caption : this.caption || "",
-          type : 'TYPE' + this.type
-        };
-
-        // Group message detection
-        var tokens = this.id.split('_');
-        if(tokens.length === 2){
-          items[this.id].groupId = tokens[0];
-          items[this.id].id = tokens[1];
-        }
-      });
-
-      CAS(itemsToTokenize, function(tokenized){
-        // merge items with tokenized items
-        var ret = $.extend(true, {}, items, tokenized);
-
-        // mixin rowData only when data is returned from facebook
-        _(ret).each(function(value, key){
-          ret[key].rowData = rowData[value.id];
-        });
-        dfd.resolve(ret);
-      }).fail(function(){
-        // CAS query fail, reject.
+        // FB query fail, reject.
         dfd.reject(arguments);
       });
-    }, function(){
-      // FB query fail, reject.
-      dfd.reject(arguments);
-    });
+    }else{
+
+      // Cache all-hit in the rowData. Process token immediately.
+      processTokenized({}, {});
+    }
 
     // Return dfd.
     return dfd.promise();
@@ -83,19 +125,17 @@
   // GET(["418597748185325", "413420318696220"], function(processedData){ ... })
   // GET(DB.getUntrained, function(processedData){ ... })
   //
-  window.GET = function(src, callback){
+  window.GET = function(src, callback, allDoneCallback){
 
     // normalize the arguments
-    var data;
+    var data, fbids;
     if($.isArray(src)){
-      // wrap the 'src' to mimic DB.get* interface,
-      // which invokes a callback(tx, rowData)
-      //
-      data = _(src).map(function(i){return {fbid: i}; });
-      data.item = function(i){return this[i]}; // DB row interface
+
+      // set the 'src' to DB.getByFBIDs
+      fbids = src;
       src = function(cb){
-        cb(null, {rows: data});
-      }
+        DB.getByFBIDs(fbids, cb);
+      };
     }
 
     // Invoke src function to get and process rows.
@@ -117,6 +157,12 @@
             console.log('First ', i, ' items are processed.', processedData);
             if(!$.isEmptyObject(processedData)){
               _(callback).defer(processedData); // heavy-lifting
+            }
+
+            // All done! Trigger alldone callback if there is one
+            if(i === rows.length && allDoneCallback){
+              // Because the callback is in event queue
+              _(allDoneCallback).defer();
             }
           }).fail(function(){
             console.error('Batch processing failed: ', arguments);

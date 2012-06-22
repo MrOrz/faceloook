@@ -1,4 +1,4 @@
-/*global WebKitMutationObserver, chrome */
+/*global WebKitMutationObserver, chrome, _ */
 
 (function(chrome, undefined){
   "use strict";
@@ -37,23 +37,39 @@
     // https://www.facebook.com/<author>/activity/<id> : Game activity
     //
   ],
+  CLS = {
+    INTERESTED: "faceloook-interested",
+    UNINTERESTED: "faceloook-uninterested",
+    INVALID: "faceloook-invalid"
+  },
 
+  // update udpated_at if not seen before
   markAsSeen = function(fbid){
     console.log('SEEN:', fbid);
-    // insert row into backend
-    chrome.extension.sendRequest({ type: 'insert', fbid: fbid });
+    chrome.extension.sendRequest({ type: 'see', fbid: fbid });
 
     delete storiesNotShown[fbid];
   },
+
+  // update clicked if not seen before
   markAsClicked = function(fbid){
-    // insert into or update into backend
-    chrome.extension.sendRequest({ type: 'update', fbid: fbid });
+    chrome.extension.sendRequest({type: 'update', fbid: fbid});
 
     console.log('STORY', fbid, "clicked!");
   },
 
+  // mark as interested
+  markInterested = function(fbid, val){
+    chrome.extension.sendRequest({type: 'mark', fbid: fbid, interested: val});
+    console.log('INTEREST', fbid, val);
+  },
+
   // Process the story <li> with known facebook id.
   processStory = function($story, fbid){
+
+    // Try inserting the story into database
+    chrome.extension.sendRequest({type: 'insert', fbid: fbid});
+
     // Push into scroll-event checking queue.
     storiesNotShown[fbid] = $story;
 
@@ -63,10 +79,52 @@
         markAsClicked(fbid);
       }
     });
+
+    // Install "interested" markers
+    var $marker = $('<div class="faceloook-marker">★</div>').appendTo($story);
+    $marker.click(function(e){
+      if($story.hasClass(CLS.INTERESTED)){
+        $story.removeClass(CLS.INTERESTED).addClass(CLS.UNINTERESTED);
+        markInterested(fbid, false);
+      }else if($story.hasClass(CLS.UNINTERESTED)){
+        $story.removeClass(CLS.UNINTERESTED).addClass(CLS.INTERESTED);
+        markInterested(fbid, true);
+      }else{
+        console.error('Error toggling the marker');
+      }
+
+      // Do not set 'clicked' for the story
+      e.stopPropagation();
+    });
+  },
+
+  // Mark as interested or not.
+  // fbStories: {fbid: jQuery facebook story element}
+  markStories = function(fbStories){
+    var fbids = _.keys(fbStories);
+    chrome.extension.sendRequest({type: 'query', fbids: fbids},
+      function(isInterested){
+        console.log('QUERY RESULT', isInterested);
+        var invalidFBID = _(fbids).difference(_(isInterested).keys());
+        if(invalidFBID.length){
+          console.error('Invalid FBID : ', invalidFBID);
+        }
+        _.each(fbStories, function($story, fbid){
+          if(isInterested[fbid] === true){
+            $story.addClass(CLS.INTERESTED);
+          }else if(isInterested[fbid] === false){
+            $story.addClass(CLS.UNINTERESTED);
+          }else{
+            $story.addClass(CLS.INVALID);
+          }
+        });
+      });
   },
 
   // Extract data from all story <li>s.
   getStories = function(stories){
+    // fbid -> jQuery facebook story element
+    var fbStories = {};
     $(stories).each(function(){
 
       // Find all time link that contains <abbr>.
@@ -74,7 +132,8 @@
       // especially in facebook groups.
       var $story = $(this),
           $link = $story.find('.uiStreamSource a').has('abbr'),
-          href, match = null;
+          href, match = null,
+          fbid;
 
 
       // Extracting id.
@@ -96,7 +155,9 @@
 
         if(match){
           //console.log('STORY:', this, 'ID: ', match[1]);
-          processStory($story, match[1]);
+          fbid = match[1];
+          fbStories[fbid] = $story;
+          processStory($story, fbid);
         }else{
           console.log('STORY:', this, 'HREF: ', href);
         }
@@ -104,6 +165,8 @@
       }
 
     });
+
+    markStories(fbStories);
   };
 
   // Listening to the subtree change of #contentCol div.
@@ -157,4 +220,7 @@
     subtree: true, childList: true
   });
   getStories($('.uiStreamStory'));
+
+  // Trigger scroll handler
+  $window.trigger('scroll');
 }(chrome));

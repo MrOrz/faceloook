@@ -1,11 +1,11 @@
-/*global chrome, FB, DB, _, GET, Bayesian */
+/*global chrome, FB, DB, _, GET, BAYES */
 
 (function(chrome, undefined){
   "use strict";
 
   // Chrome extension listener
-  chrome.extension.onRequest.addListener(function(request){
-    var fbid;
+  chrome.extension.onRequest.addListener(function(request, sender, resp){
+    var fbid, isInterested = {};
     switch(request.type){
 
       // Insert new record into database
@@ -13,14 +13,45 @@
         DB.insert(request.fbid);
         break;
 
+      // Update updated_at if not seen before
+      case "see":
+        DB.see(request.fbid);
+        break;
+
       // Update "clicked"
       case "update":
         DB.clicked(request.fbid);
-
         break;
+
+      case "mark":
+        DB.mark(request.fbid, request.interested);
+        break;
+
+      // Test if user is interested in a bunch of stories.
+      case "query":
+        GET(request.fbids, function(data){
+          _.each(data, function(item){
+            if(_.isNumber(item.rowData.explicit)){
+              isInterested[item.id] = item.rowData.explicit === 1;
+            }else{
+              // TODO:
+              // change this with classify result!
+              //isInterested[item.id] =  Math.random() > 0.7;
+              isInterested[item.id] = item.rowData.clicked === 1;
+            }
+          })
+        }, function(){
+          resp(isInterested);
+        });
+        break;
+
+      default:
+        console.error('Invalid request type ', request.type);
     }
   });
 
+  // Train the untrained feeds
+  //
   GET(DB.getUntrained, function(data){
     /*
       data = {
@@ -48,10 +79,7 @@
     // console.log('Data received by processData: ', data);
 
     BAYES.trainObj(data);
+    DB.trainedAll(_(data).pluck('id'));
   });
 
-
-
 }(chrome));
-
-

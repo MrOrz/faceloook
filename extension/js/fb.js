@@ -1,14 +1,16 @@
-/*global FB, chrome */
+/*global FB, chrome, DB, _ */
 
 (function(chrome, undefined){
   "use strict";
 
   // Pub/sub interface
   var
+  SCOPES = ["read_stream", "user_groups", "friends_groups", "user_photos",
+            "friends_photos", "user_status", "friends_status"],
   SUCCESS_URL = "https://www.facebook.com/connect/login_success.html",
   LOGIN_URL = "https://www.facebook.com/dialog/oauth?client_id=" +
     "224887097626771&response_type=token&" +
-    "scope=read_stream,user_groups,friends_groups,user_photos,friends_photos&" +
+    "scope=" + SCOPES.join(',') + "&" +
     "redirect_uri=" + SUCCESS_URL,
   API_URL = "https://graph.facebook.com/",
   callbacks = {
@@ -78,6 +80,17 @@
       });
     },
 
+    // Check if a string is in a form of facebook ID.
+    // If so, return the facebook id.
+    // else, return false.
+    ID: function(str){
+      // normalize str if the ID is GROUPID_FBID
+      str = str.split('_').slice(-1)[0];
+
+      var ids = str.match(/\d+/);
+      return (ids && ids[0] === str) && ids[0];
+    },
+
     // Send GET requests to facebook graph API.
     // Usage: FB.get('me/feed', function(data){...})
     //        FB.get('me/feed', {limit:10}, function(data){...})
@@ -129,5 +142,4 @@
       return FB; // enable chaining
     }
   };
-
 }(chrome));
