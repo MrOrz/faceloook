@@ -5,10 +5,12 @@
 
   // Pub/sub interface
   var
+  SCOPES = ["read_stream", "user_groups", "friends_groups", "user_photos",
+            "friends_photos", "user_status", "friends_status"],
   SUCCESS_URL = "https://www.facebook.com/connect/login_success.html",
   LOGIN_URL = "https://www.facebook.com/dialog/oauth?client_id=" +
     "224887097626771&response_type=token&" +
-    "scope=read_stream,user_groups,friends_groups,user_photos,friends_photos&" +
+    "scope=" + SCOPES.join(',') + "&" +
     "redirect_uri=" + SUCCESS_URL,
   API_URL = "https://graph.facebook.com/",
   callbacks = {
