@@ -176,7 +176,8 @@
 
             // All done! Trigger alldone callback if there is one
             if(i === rows.length && allDoneCallback){
-              allDoneCallback();
+              // Because the callback is in event queue
+              _(allDoneCallback).defer();
             }
           }).fail(function(){
             console.error('Batch processing failed: ', arguments);
