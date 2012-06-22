@@ -50,27 +50,27 @@
 
         // Split item properties into 2 categories:
         // those to be tokenized, and those that are not.
-        $.each(data, function(){
-          items[this.id] = {
-            id : this.id,
+        _.each(data, function(i){
+          items[i.id] = {
+            id : i.id,
             groupId : '',
-            from : this.from.id,
-            type: this.type || "",
-            updated : this.updated_time || this.created_time
+            from : i.from.id,
+            type: i.type || "",
+            updated : i.updated_time || i.created_time
           };
 
-          itemsToTokenize[this.id] = {
-            message : this.message || "",
-            link : this.link || "",
-            linkName : this.name || "",
-            linkDesct : this.description || ""
+          itemsToTokenize[i.id] = {
+            message : i.message || "",
+            link : i.link || "",
+            linkName : i.name || "",
+            linkDesct : i.description || ""
           };
 
           // Group message detection
-          var tokens = this.id.split('_');
+          var tokens = i.id.split('_');
           if(tokens.length === 2){
-            items[this.id].groupId = tokens[0];
-            items[this.id].id = tokens[1];
+            items[i.id].groupId = tokens[0];
+            items[i.id].id = tokens[1];
           }
         });
 
