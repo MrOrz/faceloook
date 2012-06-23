@@ -48,12 +48,23 @@
         // Split item properties into 2 categories:
         // those to be tokenized, and those that are not.
         _.each(data, function(i){
+          if(!i.type){
+            throw "FB type error";
+          }
           items[i.id] = {
             id : i.id,
             groupId : '',
             from : i.from.id,
             type: 'TYPE' + i.type || "",
-            updated : i.updated_time || i.created_time
+            name : i.from.name,
+            picture : i.picture || "",
+            story : i.story || "",
+            updated : i.updated_time || i.created_time,
+            originMsg :   i.message || "",
+            originCap : i.caption || "",
+            originLink : i.link || "",
+            originLinkName : i.name || "",
+            originLinkDesct : i.description || ""
           };
 
           itemsToTokenize[i.id] = {
@@ -98,6 +109,10 @@
         rowData[item.fbid] = item;
       }
     });
+
+    if(! $.isEmptyObject(cached)){
+      console.log('cache hit:', $.extend({}, cached));
+    }
 
     if(! fbids.isEmpty()){
 

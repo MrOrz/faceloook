@@ -84,11 +84,25 @@
     // If so, return the facebook id.
     // else, return false.
     ID: function(str){
+      if(!str){
+        return false;
+      }
+
       // normalize str if the ID is GROUPID_FBID
       str = str.split('_').slice(-1)[0];
 
       var ids = str.match(/\d+/);
       return (ids && ids[0] === str) && ids[0];
+    },
+
+    setType: function(feed){
+      if(this.ID(feed.id) && !feed.type){
+        if(feed.link){
+          feed.type = "link";
+        }else{
+          feed.type = "status";
+        }
+      }
     },
 
     // Send GET requests to facebook graph API.
@@ -118,6 +132,18 @@
         $.getJSON(API_URL + url, $.extend({
           access_token: localStorage.accessToken
         }, data), function(data){
+
+          // set type attribute
+          var i;
+          if(FB.ID(_.keys(data)[0])){ // dictionary of FB data
+            $.each(data, function(k){
+              FB.setType(data[k]);
+            });
+          }else{ // single FB data
+            FB.setType(data);
+          }
+
+          // invoke success callback
           successCallback(data);
         }).fail(function(jqXHR){
           if(jqXHR.responseText){
