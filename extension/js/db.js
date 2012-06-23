@@ -2,6 +2,7 @@
 (function(openDatabase, undefined){
   "use strict";
   var
+  RECENT_COUNT = 100,
   DB_VERSION = '0.1',
   DB_SIZE = 50 * 1024 * 1024, // 50MB database
   dfd = $.Deferred(), // deferred database initialization
@@ -45,6 +46,13 @@
   // select all seen but untrained
   DB.getUntrained = function(callback){
     DB('SELECT * FROM entry WHERE trained = 0 AND updated_at IS NOT NULL;', {},
+     callback);
+  };
+
+  // select most recent 100 seen posts
+  DB.getRecentlySeen = function(callback){
+    DB('SELECT * FROM entry WHERE updated_at IS NOT NULL '+
+       'ORDER BY updated_at DESC LIMIT ' + RECENT_COUNT + ';', [],
      callback);
   };
 
