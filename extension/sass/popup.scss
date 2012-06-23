@@ -31,14 +31,16 @@ body{
   height:35px;
   vertical-align:middle;
 }
+.block{
+  width:260px;
+  padding:3px;
+}
 
 // =====================================
 //              STATUS
 // =====================================
 .status{
   border:1px solid red;
-  width:260px;
-  padding:3px;
 }
 .oneStatus{
   display:inline-block;
@@ -69,42 +71,47 @@ body{
 // =====================================
 .photo{
   border:1px solid green;
-  width:260px;
-  padding:3px;
-  .onePhoto{
-    display:inline-block;
-    .p{
-      max-width:120px;
-      max-height:120px;
-      vertical-align:middle;
-      margin:2px 3px;
+}
+.onePhoto{
+  display:inline-block;
+  .p{
+    max-width:120px;
+    max-height:120px;
+    vertical-align:middle;
+    margin:2px 3px;
+  }
+  .info{
+    width:120px;
+    vertical-align:middle;
+    text-align:center;
+    padding:3px 5px;
+    .cap{
+      color:rgba(30,30,30,0.9);
     }
-    .info{
-      width:120px;
-      vertical-align:middle;
-      text-align:center;
-      padding:3px 5px;
-      .cap{
-        color:rgba(30,30,30,0.9);
-      }
-      .des{
-        color:rgba(70,70,70,1);
-      }
-      .time{
-        // text-decoration:none;
-        color:rgb(40,40,40,0.7);
-      }
-      .pmsg{
-        width: 120px;
-        max-height: 50px;
-        text-decoration:none;
-        @include ellipsis;
-        margin:2px 1px;
-        font-size:12px;
-      }
-      .u{
-        color:rgba(30,30,30,0.9);
-      }
+    .des{
+      color:rgba(70,70,70,1);
+    }
+    .time{
+      // text-decoration:none;
+      color:rgba(40,40,40,0.7);
+      font-size:4px;
+      text-decoration:none;
+    }
+    .pmsg{
+      width: 120px;
+      max-height: 50px;
+      text-decoration:none;
+      @include ellipsis;
+      margin:2px 1px;
+      font-size:9px;
+    }
+    a{
+      text-decoration:none;
+    }
+    .u{
+      color:rgba(30,30,30,0.9);
+      font-size:6px;
+      text-decoration:none;
     }
   }
 }
