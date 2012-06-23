@@ -100,8 +100,14 @@
   // should be in the form of {fbid: entire object to cache}
   DB.cache = function(fbid, cacheItem){
     console.info("Caching fbid =", fbid);
-    DB("INSERT OR REPLACE INTO entry (fbid, cache) " +
-       "VALUES (?, ?);", [fbid, JSON.stringify(cacheItem)]);
-  }
+    DB("UPDATE entry SET cache=? WHERE fbid=?;",
+       [JSON.stringify(cacheItem), fbid]);
+  };
+
+  // Clear cache for all rows
+  DB.clearCache = function(){
+    console.info("All cache are clear.");
+    DB("UPDATE entry SET cache=NULL;");
+  };
 
 }(window.openDatabase));
