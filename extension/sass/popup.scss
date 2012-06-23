@@ -4,33 +4,103 @@
  * <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" /> */
 
 @import "compass/reset";
+@import "compass/typography/text/ellipsis";
 
 body{
-  width: 500px;
+  min-height: 500px;
+  width: 600px;
+  background-image:url('../images/bg.gif');
+
 }
+
+#bar{
+  height:50px;
+  background:#F7F6F6;
+}
+
+#searchform{
+  
+
+}
+
 
 th, td{
   border: 1px solid #ccc;
   padding: .3em .5em;
 }
 
+.msg{
+  font-size:12px;
+  color:#888888;  
+  display:inline-block;
+  width: 260px;
+  max-height: 50px;
+  @include ellipsis;
+  a{
+    text-decoration:none;
+    color:#888888;
+  }
+  a:hover{
+    background:rgba(180,180,180,0.7);
+    color:rgba(10,10,10,0.9);
+  }
+}
+
+
 .block{
-	
+  
+}
+
+.u{
+  height:35px;
+  width:35px;
 }
 
 .status{
-	border:1px solid red;
+  border:1px solid red;
+  width:260px;
+  padding:3px;
 }
+.oneStatus{
+  display:inline-block;
+  img{ width:35px; height:35px;}
+  .text{
+    display:inline-block;
+    width:220px;
+    padding-left:5px;
+  }
+  .name{
+    font-size:10px;
+    color:#3A3A3A;
+  }
+}
+
 .photo{
-	border:1px solid orange;
+  border:1px solid green;
+  width:260px;
+  padding:3px;
+  .onePhoto{
+    display:inline-block;
+    .p{
+      width:80px;
+      height:80px;      
+    }
+    .u{
+
+    }
+    .t{
+
+    }
+  }
 }
+
 .link{
-	border:1px solid green;
+  border:1px solid orange;
 }
 .video{
-	border:1px solid blue;
+  border:1px solid blue;
 }
 .checkin{
-	border:1px solid yellow;
+  border:1px solid yellow;
 }
 

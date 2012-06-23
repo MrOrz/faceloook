@@ -41,11 +41,14 @@
   // });
 
   var lists = {
-    'status': $('.status'),
-    'video': $('.video'),
-    'photo': $('photo'),
-    'link': $('link')
+    'TYPEstatus': $('.status'),
+    'TYPEvideo': $('.video'),
+    'TYPEphoto': $('.photo'),
+    'TYPElink': $('.link'),
+    'TYPEcheckin': $('.checkin')
   };
+
+  var API_URL = "https://graph.facebook.com/";
 
   /*GET(src, function(){})\
   src 可以是 facebook id 的陣列
@@ -72,7 +75,28 @@
         console.log(sortToken);
         $.each(sortToken,function(k,v){
           console.log('v:',v);
-          lists[v.type].append('<div>' + v.message + '</div>');
+          if(v.type == 'TYPEstatus' ){            
+            
+            if( v.originMsg.length > 30 )
+               v.originMsg = v.originMsg.slice(0,30) + "..." ;
+
+            lists[v.type].append('<div class="oneStatus"> ' + 
+              '<img src="' + API_URL + v.from + '/picture">' + 
+              '<div class="text"><p><span>' + v.name + '</span><p>' +
+              '<span class="msg"><a href="https://www.facebook.com/' + v.from + '/posts/' + v.tokenId[1]  + '">'
+              + v.originMsg + '</a></div>'
+            );
+
+          }
+          else if(v.type == 'TYPEphoto'){
+            lists[v.type].append('<div class="onePhoto">' + 
+              '<img class="p" src="' + v.picture +
+              '<img class="u" src="https://graph.facebook.com/' + v.from + '/picture">' + 
+              '<span class="t">' + v.create_time + '</span></div>');            
+          }
+          else if(v.type == 'TYPEvideo'){
+
+          }
         });
       });
     

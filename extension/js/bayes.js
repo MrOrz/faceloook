@@ -21,7 +21,7 @@
             if(v.type !== '')
               bayes.train( 'TYPE' + v.type,v.rowData.clicked);
             if(v.caption !== '')
-              bayes.train( caption ,v.rowData.clicked);
+              bayes.train( v.caption ,v.rowData.clicked);
           }
       });
     },
@@ -32,23 +32,32 @@
       var item = {};
       $.each(data,function(){
         itemsToTokenize[this.id] = {
+          tokenId : this.id,
+
           message : this.message || "",
           link : this.link || "",
           linkName : this.name || "",
           linkDesct : this.description || "",
           caption : this.caption || "",
-          type : 'TYPE' + this.type                          
+          type : 'TYPE' + this.type                    
         };
             
         item[this.id] = {
           id : this.id,
           groupId : '',
           from : this.from.id,
+          name : this.from.name,
           type : this.type || "",
           picture : this.picture || "",
           story : this.story || "",
           create_time : this.created_time || "",
-          updated : this.updated_time || this.created_time
+          updated : this.updated_time || this.created_time,
+
+          originMsg : this.message || "",
+          originCap : this.caption || "",
+          originLink : this.link || "",
+          originLinkName : this.name || "",
+          originLinkDesct : this.description || "",
         };        
       });
       console.log('itemsToTokenize: ',itemsToTokenize);
