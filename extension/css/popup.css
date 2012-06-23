@@ -1,176 +1,106 @@
-/* Welcome to Compass.
- * In this file you should write your main styles. (or centralize your imports)
- * Import this file using the following HTML or equivalent:
- * <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" /> */
-/* line 17, ../../../../.rvm/gems/ruby-1.9.2-p318/gems/compass-0.12.1/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed,
-figure, figcaption, footer, header, hgroup,
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  font-size: 100%;
-  font: inherit;
-  vertical-align: baseline;
-}
+/*
+Syntax error: wrong number of arguments (4 for 3) for `rgb'
+        on line 95 of /home/mrorz/workspace/facelink/extension/sass/popup.scss
 
-/* line 20, ../../../../.rvm/gems/ruby-1.9.2-p318/gems/compass-0.12.1/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
-body {
-  line-height: 1;
-}
-
-/* line 22, ../../../../.rvm/gems/ruby-1.9.2-p318/gems/compass-0.12.1/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
-ol, ul {
-  list-style: none;
-}
-
-/* line 24, ../../../../.rvm/gems/ruby-1.9.2-p318/gems/compass-0.12.1/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
-table {
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-
-/* line 26, ../../../../.rvm/gems/ruby-1.9.2-p318/gems/compass-0.12.1/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
-caption, th, td {
-  text-align: left;
-  font-weight: normal;
-  vertical-align: middle;
-}
-
-/* line 28, ../../../../.rvm/gems/ruby-1.9.2-p318/gems/compass-0.12.1/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
-q, blockquote {
-  quotes: none;
-}
-/* line 101, ../../../../.rvm/gems/ruby-1.9.2-p318/gems/compass-0.12.1/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
-q:before, q:after, blockquote:before, blockquote:after {
-  content: "";
-  content: none;
-}
-
-/* line 30, ../../../../.rvm/gems/ruby-1.9.2-p318/gems/compass-0.12.1/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
-a img {
-  border: none;
-}
-
-/* line 114, ../../../../.rvm/gems/ruby-1.9.2-p318/gems/compass-0.12.1/frameworks/compass/stylesheets/compass/reset/_utilities.scss */
-article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary {
-  display: block;
-}
-
-/* line 9, ../sass/popup.scss */
-body {
-  min-height: 500px;
-  width: 600px;
-  background-image: url("../images/bg.gif");
-}
-
-/* line 16, ../sass/popup.scss */
-#bar {
-  height: 50px;
-  background: #F7F6F6;
-}
-
-/* line 27, ../sass/popup.scss */
-th, td {
-  border: 1px solid #ccc;
-  padding: .3em .5em;
-}
-
-/* line 32, ../sass/popup.scss */
-.msg {
-  font-size: 12px;
-  color: #888888;
-  display: inline-block;
-  width: 260px;
-  max-height: 50px;
-  white-space: nowrap;
-  overflow: hidden;
-  -ms-text-overflow: ellipsis;
-  -o-text-overflow: ellipsis;
-  text-overflow: ellipsis;
-}
-/* line 39, ../sass/popup.scss */
-.msg a {
-  text-decoration: none;
-  color: #888888;
-}
-/* line 43, ../sass/popup.scss */
-.msg a:hover {
-  background: rgba(180, 180, 180, 0.7);
-  color: rgba(10, 10, 10, 0.9);
-}
-
-/* line 54, ../sass/popup.scss */
-.u {
-  height: 35px;
-  width: 35px;
-}
-
-/* line 59, ../sass/popup.scss */
-.status {
-  border: 1px solid red;
-  width: 260px;
-  padding: 3px;
-}
-
-/* line 64, ../sass/popup.scss */
-.oneStatus {
-  display: inline-block;
-}
-/* line 66, ../sass/popup.scss */
-.oneStatus img {
-  width: 35px;
-  height: 35px;
-}
-/* line 67, ../sass/popup.scss */
-.oneStatus .text {
-  display: inline-block;
-  width: 220px;
-  padding-left: 5px;
-}
-/* line 72, ../sass/popup.scss */
-.oneStatus .name {
-  font-size: 10px;
-  color: #3A3A3A;
-}
-
-/* line 78, ../sass/popup.scss */
-.photo {
-  border: 1px solid green;
-  width: 260px;
-  padding: 3px;
-}
-/* line 82, ../sass/popup.scss */
-.photo .onePhoto {
-  display: inline-block;
-}
-/* line 84, ../sass/popup.scss */
-.photo .onePhoto .p {
-  width: 80px;
-  height: 80px;
-}
-
-/* line 97, ../sass/popup.scss */
-.link {
-  border: 1px solid orange;
-}
-
-/* line 100, ../sass/popup.scss */
-.video {
-  border: 1px solid blue;
-}
-
-/* line 103, ../sass/popup.scss */
-.checkin {
-  border: 1px solid yellow;
-}
+Backtrace:
+/home/mrorz/workspace/facelink/extension/sass/popup.scss:95
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/script/funcall.rb:97:in `rescue in _perform'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/script/funcall.rb:76:in `_perform'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/script/node.rb:40:in `perform'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/perform.rb:216:in `visit_prop'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/base.rb:37:in `visit'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/perform.rb:18:in `visit'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/base.rb:53:in `block in visit_children'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/base.rb:53:in `map'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/base.rb:53:in `visit_children'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/perform.rb:27:in `block in visit_children'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/perform.rb:39:in `with_environment'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/perform.rb:26:in `visit_children'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/base.rb:37:in `block in visit'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/perform.rb:238:in `visit_rule'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/base.rb:37:in `visit'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/perform.rb:18:in `visit'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/base.rb:53:in `block in visit_children'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/base.rb:53:in `map'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/base.rb:53:in `visit_children'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/perform.rb:27:in `block in visit_children'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/perform.rb:39:in `with_environment'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/perform.rb:26:in `visit_children'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/base.rb:37:in `block in visit'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/perform.rb:238:in `visit_rule'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/base.rb:37:in `visit'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/perform.rb:18:in `visit'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/base.rb:53:in `block in visit_children'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/base.rb:53:in `map'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/base.rb:53:in `visit_children'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/perform.rb:27:in `block in visit_children'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/perform.rb:39:in `with_environment'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/perform.rb:26:in `visit_children'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/base.rb:37:in `block in visit'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/perform.rb:238:in `visit_rule'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/base.rb:37:in `visit'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/perform.rb:18:in `visit'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/base.rb:53:in `block in visit_children'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/base.rb:53:in `map'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/base.rb:53:in `visit_children'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/perform.rb:27:in `block in visit_children'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/perform.rb:39:in `with_environment'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/perform.rb:26:in `visit_children'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/base.rb:37:in `block in visit'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/perform.rb:238:in `visit_rule'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/base.rb:37:in `visit'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/perform.rb:18:in `visit'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/base.rb:53:in `block in visit_children'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/base.rb:53:in `map'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/base.rb:53:in `visit_children'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/perform.rb:27:in `block in visit_children'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/perform.rb:39:in `with_environment'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/perform.rb:26:in `visit_children'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/base.rb:37:in `block in visit'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/perform.rb:47:in `visit_root'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/base.rb:37:in `visit'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/perform.rb:18:in `visit'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/visitors/perform.rb:7:in `visit'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/tree/root_node.rb:20:in `render'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/engine.rb:299:in `_render'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/sass-3.1.15/lib/sass/engine.rb:246:in `render'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/compass-0.12.1/lib/compass/compiler.rb:140:in `block (2 levels) in compile'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/compass-0.12.1/lib/compass/compiler.rb:126:in `timed'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/compass-0.12.1/lib/compass/compiler.rb:139:in `block in compile'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/compass-0.12.1/lib/compass/logger.rb:45:in `red'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/compass-0.12.1/lib/compass/compiler.rb:138:in `compile'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/compass-0.12.1/lib/compass/compiler.rb:118:in `compile_if_required'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/compass-0.12.1/lib/compass/compiler.rb:103:in `block (2 levels) in run'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/compass-0.12.1/lib/compass/compiler.rb:101:in `each'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/compass-0.12.1/lib/compass/compiler.rb:101:in `block in run'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/compass-0.12.1/lib/compass/compiler.rb:126:in `timed'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/compass-0.12.1/lib/compass/compiler.rb:100:in `run'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/compass-0.12.1/lib/compass/commands/update_project.rb:45:in `perform'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/compass-0.12.1/lib/compass/commands/base.rb:18:in `execute'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/compass-0.12.1/lib/compass/commands/project_base.rb:19:in `execute'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/guard-compass-0.0.6/lib/guard/compass.rb:47:in `run_on_change'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/guard-1.0.1/lib/guard.rb:387:in `block in run_supervised_task'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/guard-1.0.1/lib/guard.rb:385:in `catch'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/guard-1.0.1/lib/guard.rb:385:in `run_supervised_task'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/guard-1.0.1/lib/guard.rb:341:in `run_on_change_task'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/guard-1.0.1/lib/guard.rb:279:in `block (2 levels) in run_on_change'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/guard-1.0.1/lib/guard.rb:319:in `block (3 levels) in run_on_guards'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/guard-1.0.1/lib/guard.rb:318:in `each'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/guard-1.0.1/lib/guard.rb:318:in `block (2 levels) in run_on_guards'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/guard-1.0.1/lib/guard.rb:317:in `catch'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/guard-1.0.1/lib/guard.rb:317:in `block in run_on_guards'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/guard-1.0.1/lib/guard.rb:316:in `each'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/guard-1.0.1/lib/guard.rb:316:in `run_on_guards'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/guard-1.0.1/lib/guard.rb:278:in `block in run_on_change'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/guard-1.0.1/lib/guard.rb:295:in `block in run'
+<internal:prelude>:10:in `synchronize'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/guard-1.0.1/lib/guard.rb:292:in `run'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/guard-1.0.1/lib/guard.rb:277:in `run_on_change'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/guard-1.0.1/lib/guard/listener.rb:89:in `block (2 levels) in start_reactor'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/guard-1.0.1/lib/guard/listener.rb:85:in `loop'
+/home/mrorz/.rvm/gems/ruby-1.9.2-p290/gems/guard-1.0.1/lib/guard/listener.rb:85:in `block in start_reactor'
+*/
+body:before {
+  white-space: pre;
+  font-family: monospace;
+  content: "Syntax error: wrong number of arguments (4 for 3) for `rgb'\A         on line 95 of /home/mrorz/workspace/facelink/extension/sass/popup.scss"; }

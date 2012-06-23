@@ -1,8 +1,8 @@
-/*global DB */
+/*global DB, BAYES, FB */
 (function(undefined){
   "use strict";
 
-  var  
+  var
   $clicked = $('.clicked tbody'),
   $not_clicked = $('.not_clicked tbody'),
   trMaker = function(row){
@@ -56,53 +56,80 @@
   //FB.get('me/feed', {limit:10}, function(data){...})
   $('#searchform').on('submit',function(e){
     e.preventDefault();
+    //clear list
+    $.each(lists,function(k,v){
+      v.empty();
+    });
     // console.log('click search!');
     alert($("#input").val());
     var input = $("#input").val();
-    //https://graph.facebook.com/search?q=QUERY&type=OBJECT_TYPE
-    // $.getJSON('https://graph.facebook.com/me/home?q=' + input + '&access_token=', 
-    //   {access_token: $access_token.val()},
-    //   function(data,status){
-    //     console.log('data: ',data)
-    //   });
     FB.get('me/home', {q:input,limit:15}, function(data){
       var itemsToTokenize = {};
       var item = {};
       var itemsAfterTokenize = {};
       console.log('FB.get,data: ',data);
-      
+
       BAYES.getCASProb(data.data,function(sortToken){
         console.log(sortToken);
         $.each(sortToken,function(k,v){
           console.log('v:',v);
-          if(v.type == 'TYPEstatus' ){            
-            
-            if( v.originMsg.length > 30 )
-               v.originMsg = v.originMsg.slice(0,30) + "..." ;
-
-            lists[v.type].append('<div class="oneStatus"> ' + 
-              '<img src="' + API_URL + v.from + '/picture">' + 
-              '<div class="text"><p><span class="name">' + v.name + '</span><p>' +
-              '<span class="msg"><a href="https://www.facebook.com/' + v.from + '/posts/' + v.tokenId[1]  + '">'
-              + v.originMsg + '</a></div>'
+          var postId = FB.ID(v.id);
+          if(v.type === 'TYPEstatus' ){
+            lists[v.type].append('<div class="oneStatus" > ' +
+              '<img class="u" src="' + API_URL + v.from + '/picture">' +
+              '<div class="text">' +
+                '<a href="https://www.facebook.com/' + v.from + '/posts/' + postId  + '" target="_blank">' +
+                  '<span class="name">' + v.name + '</span>' + '<br>' +
+                  '<span class="msg">' + v.originMsg + '</span>' +
+                '</a>' +
+              '</div>' +
+            '</div>'
             );
 
           }
-          else if(v.type == 'TYPEphoto'){
-            lists[v.type].append('<div class="onePhoto">' + 
-              '<img class="p" src="' + v.picture +
-              '<img class="u" src="https://graph.facebook.com/' + v.from + '/picture">' + 
-              '<span class="t">' + v.create_time + '</span></div>');            
+          else if(v.type === 'TYPEphoto'){
+            // make text information
+            var info = "" ;
+            if(v.originMsg !== "" ){
+              info = info + '<span class="pmsg">' + v.originMsg + '</span></br>' ;
+            }
+            if(v.originCap !== "" ){
+              info = info + '<span class="pmsg cap">' + v.originCap + '</span></br>' ;
+            }
+            if(v.originLinkDesct !== "" ){
+              info = info + '<span class="pmsg des">' + v.originLinkDesct + '</span></br>' ;
+            }
+            console.log('info:',info);
+            //append
+            var now = new Date();
+            var age = (now - v.create_time)/60000;
+            lists[v.type].append('<div class="onePhoto">' +
+              '<a href="' + v.originLink + '">' +
+                '<img class="p" src="' + v.picture + '">' +
+              '</a>' +
+              '<div class="info">' +
+                '<a href="https://www.facebook.com/' + v.from + '/posts/' + postId  + '" target="_blank">' +
+                  '<div class="pmsg">' + info + '</div>' +
+                '</a>' +
+                '<div>' +
+                  '<a href="https://www.facebook.com/' + v.from  + '">' +
+                    '<span class="pmsg u">' + v.name + '</span>' +
+                  '</a>' +
+                  '<span class="pmsg time">' + age + ' mins</span></br>' +
+                '</div>' +
+              '</div>' +
+            '</div>');
           }
-          else if(v.type == 'TYPEvideo'){
-
+          else if(v.type === 'TYPEvideo'){
+            lists[v.type].append('<div class="onePhoto">' +
+              '</div>');
           }
         });
       });
-    
+
     });
   });
-  
-  
+
+
 
 }());
