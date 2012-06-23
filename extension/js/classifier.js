@@ -2,10 +2,11 @@
 /* classifier library by harthur (https://github.com/harthur/classifier)
  * Copyright (c) 2010 Heather Arthur <fayearthur@gmail.com> */
 
-
 (function(){
 "use strict";
-
+var console = {
+  log: $.noop
+};
 var LocalStorageBackend = function(options) {
   options = options || {};
   var name = options.name || Math.floor(Math.random() * 100000);
@@ -114,10 +115,10 @@ window.Bayesian.prototype = {
 
   incDocCounts : function(docs, callback) {
     // accumulate all the pending increments
-    // console.log('incDocCounts(docs, callback) ===')    
+    // console.log('incDocCounts(docs, callback) ===')
 
     var wordIncs = {};
-    var catIncs = {};    
+    var catIncs = {};
     docs.forEach(function(doc) {
       var cat = doc.cat;
       catIncs[cat] = catIncs[cat] ? catIncs[cat] + 1 : 1;
@@ -125,8 +126,8 @@ window.Bayesian.prototype = {
       words.forEach(function(word) {
         wordIncs[word] = wordIncs[word] || {};
         wordIncs[word][cat] = wordIncs[word][cat] ? wordIncs[word][cat] + 1 : 1;
-      }, this);      
-    }, this);    
+      }, this);
+    }, this);
     return this.backend.incCounts(catIncs, wordIncs, callback);
   },
 
@@ -143,7 +144,7 @@ window.Bayesian.prototype = {
     }
     //why this line cannot be done well ?
     // var words = doc.split(/\W+/);
-    var words = doc.split(" ");    
+    var words = doc.split(" ");
     // console.log('words: ',words)
     // console.log('return _(words).uniq() : ' , _(words).uniq());
     return _(words).uniq();
@@ -170,7 +171,7 @@ window.Bayesian.prototype = {
 
   wordProb : function(word, cat, cats, counts) {
     // console.log('======function wordProb:======');
-    // times word appears in a doc in this cat / docs in this cat    
+    // times word appears in a doc in this cat / docs in this cat
     var prob = (counts[cat] || 0) / cats[cat];
     // console.log('prob: ',prob);
     // get weighted average with assumed so prob won't be extreme on rare words
@@ -187,7 +188,7 @@ window.Bayesian.prototype = {
   },
 
   getCatProbs : function(cats, words, counts) {
-    // console.log('getCatProbs! line173:'); 
+    // console.log('getCatProbs! line173:');
     // console.log('cats:',cats);
     // console.log('words:',words);
     var numDocs = _(cats).reduce(function(sum, count) {
@@ -223,29 +224,29 @@ window.Bayesian.prototype = {
   },
 
   getProbs : function(doc, callback) {
-    console.log('getProb() ===')
+    // console.log('getProb() ===')
     var that = this;
     var tmp = this.getCats(function(cats) {
-      var words = that.getWords(doc);      
+      var words = that.getWords(doc);
       that.getWordCounts(words, cats, function(counts) {
         var probs = that.getCatProbs(cats, words, counts);
         callback(probs);
       });
     });
-    console.log('tmp:',tmp);
+    // console.log('tmp:',tmp);
   },
 
   getProbsSync : function(doc) {
-    console.log('getProbsSync :')
-    console.log('var words = this.getWords(doc);');
+    // console.log('getProbsSync :')
+    // console.log('var words = this.getWords(doc);');
     var words = this.getWords(doc);
-    console.log('words:',words);
-    console.log('var cats = this.getCats();');
+    // console.log('words:',words);
+    // console.log('var cats = this.getCats();');
     var cats = this.getCats();
-    console.log("cats :",cats)
-    console.log('var counts = this.getWordCounts(words, cats);');
+    // console.log("cats :",cats)
+    // console.log('var counts = this.getWordCounts(words, cats);');
     var counts = this.getWordCounts(words, cats);
-    console.log('counts: ', counts);
+    // console.log('counts: ', counts);
     // var counts = this.getWordCounts(doc, cats);
     // console.log("count : ",counts)
     // return this.getCatProbs(cats, doc, counts);
@@ -290,7 +291,7 @@ window.Bayesian.prototype = {
     var probs = this.getProbsSync(doc);
     console.log('classifySync - probs : ',probs);
     return probs;
-    return this.bestMatch(probs);
+    //return this.bestMatch(probs);
   },
 
   test : function(data) {
