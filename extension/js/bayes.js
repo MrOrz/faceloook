@@ -17,7 +17,6 @@
         if(v.message !==''){
           bayes.train(v.message,v.rowData.clicked);
           bayes.train(v.from,v.rowData.clicked);
-
           if(v.link !== ''){
             bayes.train(v.link,v.rowData.clicked);
           }
@@ -40,6 +39,8 @@
       var item = {};
       $.each(data,function(){
         itemsToTokenize[this.id] = {
+          tokenId : this.id,
+
           message : this.message || "",
           link : this.link || "",
           linkName : this.name || "",
@@ -52,11 +53,18 @@
           id : this.id,
           groupId : '',
           from : this.from.id,
+          name : this.from.name,
           type : this.type || "",
           picture : this.picture || "",
           story : this.story || "",
           create_time : this.created_time || "",
-          updated : this.updated_time || this.created_time
+          updated : this.updated_time || this.created_time,
+
+          originMsg : this.message || "",
+          originCap : this.caption || "",
+          originLink : this.link || "",
+          originLinkName : this.name || "",
+          originLinkDesct : this.description || ""
         };
       });
       console.log('itemsToTokenize: ',itemsToTokenize);
