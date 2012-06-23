@@ -23,6 +23,7 @@
         DB.clicked(request.fbid);
         break;
 
+      // Mark interested or not
       case "mark":
         DB.mark(request.fbid, request.interested);
         break;
@@ -31,13 +32,12 @@
       case "query":
         GET(request.fbids, function(data){
           _.each(data, function(item){
+            // If it is explicitly set to be interested or not interested
             if(_.isNumber(item.rowData.explicit)){
               isInterested[item.id] = item.rowData.explicit === 1;
             }else{
-              // TODO:
-              // change this with classify result!
-              //isInterested[item.id] =  Math.random() > 0.7;
-              isInterested[item.id] = item.rowData.clicked === 1;
+              // use classifier to determine if the user is interested
+              isInterested[item.id] = BAYES.isInterested(item);
             }
           })
         }, function(){

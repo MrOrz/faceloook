@@ -8,7 +8,8 @@
         name : 'japie'
       }
     }
-  });
+  }),
+  THRESHOLD = 0.7;
 
   window.BAYES = {
     trainObj : function(data){
@@ -100,7 +101,10 @@
       // console.log('age',age);
 
       return category[1]/(category[0] + category[1]);
+    },
+
+    isInterested: function(tokenized){
+      return window.BAYES.getProb(tokenized) > THRESHOLD;
     }
   };
 }());
-
