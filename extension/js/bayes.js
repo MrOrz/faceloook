@@ -39,22 +39,19 @@
       var item = {};
       $.each(data,function(){
         itemsToTokenize[this.id] = {
-          tokenId : this.id,
-
           message : this.message || "",
           link : this.link || "",
           linkName : this.name || "",
           linkDesct : this.description || "",
-          caption : this.caption || "",
-          type : 'TYPE' + this.type
+          caption : this.caption || ""
         };
 
         item[this.id] = {
+          type : 'TYPE' + this.type,
           id : this.id,
           groupId : '',
           from : this.from.id,
           name : this.from.name,
-          type : this.type || "",
           picture : this.picture || "",
           story : this.story || "",
           create_time : this.created_time || "",
