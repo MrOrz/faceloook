@@ -24,10 +24,12 @@
     $.each(sortToken,function(k,v){
       console.log('v:',v);
       var postId = FB.ID(v.id);
+      var info = "" ;
+      var href = "https://www.facebook.com/" +
+               (v.rowData.href || v.from + '/posts/' + postId);
       console.log('postId:',postId);
       if(v.type === 'TYPEphoto' || v.type === 'TYPEvideo'){
         // make text information
-        var info = "" ;
         if(v.originMsg !== "" ){
           info = info + '<span class="pmsg">' + v.originMsg + '</span></br>' ;
         }
@@ -40,15 +42,16 @@
         console.log('info:',info);
         // append
         var now = new Date();
-        var updateTime = new Date()
+        var updateTime = new Date();
         var age = (now - v.updated)/60000;
+
         console.log('age:',age);
         lists[v.type].append('<div class="onePhoto">' +
           '<a href="' + v.originLink + '">' +
             '<img class="p" src="' + v.picture + '">' +
           '</a>' +
           '<div class="info">' +
-            '<a href="https://www.facebook.com/' + v.from + '/posts/' + postId  + '" target="_blank">' +
+            '<a href="' + href + '" target="_blank">' +
               '<div class="pmsg">' + info + '</div>' +
             '</a>' +
             '<div>' +
@@ -60,13 +63,45 @@
           '</div>' +
         '</div>');
       }
+      else if(v.type === 'TYPElink'){
+        // make text information
+        if(v.originLinkName !== "" ){
+          info = info + '<span class="pmsg lname">' + v.originLinkName + '</span></br>' ;
+        }
+        if(v.originLinkDesct !== "" ){
+          info = info + '<span class="pmsg ldes">' + v.originLinkDesct + '</span></br>' ;
+        }
+        if(v.originMsg !== "" ){
+          info = info + '<span class="pmsg des">' + v.originMsg + '</span></br>' ;
+        }
+        console.log('info:',info);
+
+        lists[v.type].append('<div class="oneLink">' +
+          '<a href="' + v.originLink + '">' +
+            '<img class="p" src="' + v.picture + '">' +
+          '</a>' +
+          '<div class="info">' +
+            '<a href="https://www.facebook.com/' + v.from + '/posts/' + postId  + '" target="_blank">' +
+              '<div class="pmsg">' + info + '</div>' +
+            '</a>' +
+            '<div>' +
+              '<a href="https://www.facebook.com/' + v.from  + '">' +
+                '<span class="pmsg u">' + v.name + '</span>' +
+              '</a>' +
+              // '<span class="pmsg time">' + age + ' mins</span></br>' +
+            '</div>' +
+          '</div>' +
+        '</div>');
+      }
       else if(v.type === 'TYPEcheckin'){
         lists[v.type].append('<div class="oneCheck">' +
+          '<img class="u" src="' + API_URL + v.from + '/picture">' +
           '</div>');
       }
       else if(v.type === 'TYPEstatus' || 1 ){
-        console.log('v.type === status');
-        console.log(lists[v.type]);
+        // console.log('v.type === status');
+        // console.log(lists[v.type]);
+        v.type = 'TYPEstatus';
         lists[v.type].append('<div class="oneStatus" > ' +
           '<img class="u" src="' + API_URL + v.from + '/picture">' +
           '<div class="text">' +
@@ -77,7 +112,7 @@
           '</div>' +
         '</div>'
         );
-        console.log('v.type === status doneeeeee');
+        // console.log('v.type === status doneeeeee');
       }
     });
   };
@@ -110,8 +145,22 @@
     FB.get('me/home', {q:input,limit:30}, function(data){
       console.log('FB.get,data: ',data);
       BAYES.getCASProb(data.data,function(sortToken){
-        console.log(sortToken);
-        app2div(sortToken);
+
+        // injecting "rowData" property into sortToken
+        var fbids = _.map(sortToken, function(v){return FB.ID(v.id)});
+        console.log(fbids);
+        DB.getByFBIDs(fbids, function(tx, result){
+          var i = 0, rows = result.rows, rowData = {}, row;
+          for(; i<rows.length; i+=1){
+            row = rows.item(i);
+            rowData[row.id] = row;
+          }
+          _.each(sortToken, function(v, i){
+            sortToken[i].rowData = rowData[v.id] || {};
+          });
+          console.log(sortToken);
+          app2div(sortToken);
+        });
       });
 
     });

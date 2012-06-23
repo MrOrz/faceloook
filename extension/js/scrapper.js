@@ -65,10 +65,12 @@
   },
 
   // Process the story <li> with known facebook id.
-  processStory = function($story, fbid){
+  processStory = function($link, $story, fbid){
 
     // Try inserting the story into database
-    chrome.extension.sendRequest({type: 'insert', fbid: fbid});
+    chrome.extension.sendRequest({
+      type: 'insert', fbid: fbid, href: $link.attr('href')
+    });
 
     // Push into scroll-event checking queue.
     storiesNotShown[fbid] = $story;
@@ -157,7 +159,7 @@
           //console.log('STORY:', this, 'ID: ', match[1]);
           fbid = match[1];
           fbStories[fbid] = $story;
-          processStory($story, fbid);
+          processStory($link, $story, fbid);
         }else{
           console.log('STORY:', this, 'HREF: ', href);
         }

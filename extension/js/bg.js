@@ -10,7 +10,7 @@
 
       // Insert new record into database
       case "insert":
-        DB.insert(request.fbid);
+        DB.insert(request.fbid, request.href);
         break;
 
       // Update updated_at if not seen before

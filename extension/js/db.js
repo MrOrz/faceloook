@@ -15,6 +15,7 @@
         'CREATE TABLE IF NOT EXISTS entry(' +
           'id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,' +
           'fbid TEXT NOT NULL,' +
+          'href TEXT,' +
           'cache TEXT,' +
           'clicked INTEGER NOT NULL DEFAULT 0,' +
           'trained INTEGER NOT NULL DEFAULT 0,' +
@@ -63,9 +64,9 @@
   };
 
   // new record in entry
-  DB.insert = function(fbid){
+  DB.insert = function(fbid, href){
     console.info('inserting', fbid);
-    DB("INSERT INTO entry (fbid) values (?);", [fbid]);
+    DB("INSERT INTO entry (fbid, href) values (?, ?);", [fbid, href]);
   };
 
   DB.see = function(fbid){
