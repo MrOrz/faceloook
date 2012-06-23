@@ -82,7 +82,7 @@
 
             lists[v.type].append('<div class="oneStatus"> ' + 
               '<img src="' + API_URL + v.from + '/picture">' + 
-              '<div class="text"><p><span>' + v.name + '</span><p>' +
+              '<div class="text"><p><span class="name">' + v.name + '</span><p>' +
               '<span class="msg"><a href="https://www.facebook.com/' + v.from + '/posts/' + v.tokenId[1]  + '">'
               + v.originMsg + '</a></div>'
             );
