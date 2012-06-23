@@ -2,14 +2,17 @@
 
 (function(){
   "use strict";
-  var bayes = new Bayesian({
-    backend:{
-      options : {
-        name : 'japie'
+  var bayes,
+  THRESHOLD = 0.7,
+  init = function(){
+    bayes = new Bayesian({
+      backend:{
+        options : {
+          name : 'japie'
+        }
       }
-    }
-  }),
-  THRESHOLD = 0.7;
+    });
+  };
 
   window.BAYES = {
     trainObj : function(data){
@@ -113,6 +116,15 @@
 
     isInterested: function(tokenized){
       return window.BAYES.getProb(tokenized) > THRESHOLD;
+    },
+
+    // clear local storage
+    resetStorage: function(){
+      localStorage.clear();
+      init();
     }
   };
+
+  // Initialize bayes variable
+  init();
 }());

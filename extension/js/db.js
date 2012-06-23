@@ -42,7 +42,7 @@
     });
   };
 
-  // select all seen but untrained
+  // select all with valid id
   DB.getUntrained = function(callback){
     DB('SELECT * FROM entry WHERE trained = 0 AND updated_at IS NOT NULL;', {},
      callback);
@@ -95,6 +95,11 @@
     console.info('deleting', fbids);
     DB('DELETE FROM entry WHERE fbid IN (' + fbids.join(',') + ');');
   };
+
+  // get all cached items for training
+  DB.getCached = function(callback){
+    DB('SELECT * FROM entry WHERE cache IS NOT NULL;', [], callback);
+  }
 
   // set cache
   // should be in the form of {fbid: entire object to cache}
