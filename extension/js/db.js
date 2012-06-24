@@ -46,7 +46,8 @@
 
   // select all with valid id
   DB.getUntrained = function(callback){
-    DB('SELECT * FROM entry WHERE trained = 0 AND updated_at IS NOT NULL;', {},
+    DB('SELECT * FROM entry WHERE trained = 0 AND updated_at IS NOT NULL ORDER BY id DESC;', {},
+    //DB('SELECT * FROM entry WHERE trained = 0 ORDER BY id DESC;', {},
      callback);
   };
 
