@@ -146,40 +146,41 @@ body {
 }
 
 /* line 75, ../sass/popup.scss */
-.onePhoto {
+.onePhoto, .oneLink {
   display: inline-block;
+  text-align: center;
 }
-/* line 77, ../sass/popup.scss */
-.onePhoto .p {
+/* line 78, ../sass/popup.scss */
+.onePhoto .p, .oneLink .p {
   max-width: 120px;
   max-height: 120px;
-  vertical-align: middle;
   margin: 2px 3px;
+  vertical-align: middle;
 }
-/* line 83, ../sass/popup.scss */
-.onePhoto .info {
+/* line 84, ../sass/popup.scss */
+.onePhoto .info, .oneLink .info {
   width: 120px;
   vertical-align: middle;
   text-align: center;
   padding: 3px 5px;
 }
-/* line 88, ../sass/popup.scss */
-.onePhoto .info .cap {
+/* line 89, ../sass/popup.scss */
+.onePhoto .info .cap, .oneLink .info .cap {
   color: rgba(30, 30, 30, 0.9);
 }
-/* line 91, ../sass/popup.scss */
-.onePhoto .info .des {
+/* line 92, ../sass/popup.scss */
+.onePhoto .info .des, .oneLink .info .des {
   color: #464646;
 }
-/* line 94, ../sass/popup.scss */
-.onePhoto .info .time {
+/* line 95, ../sass/popup.scss */
+.onePhoto .info .time, .oneLink .info .time {
   color: rgba(40, 40, 40, 0.7);
   font-size: 4px;
   text-decoration: none;
 }
-/* line 100, ../sass/popup.scss */
-.onePhoto .info .pmsg {
-  width: 120px;
+/* line 101, ../sass/popup.scss */
+.onePhoto .info .pmsg, .oneLink .info .pmsg {
+  max-width: 120px;
   max-height: 50px;
   text-decoration: none;
   white-space: nowrap;
@@ -190,28 +191,37 @@ body {
   margin: 2px 1px;
   font-size: 9px;
 }
-/* line 108, ../sass/popup.scss */
-.onePhoto .info a {
+/* line 109, ../sass/popup.scss */
+.onePhoto .info a, .oneLink .info a {
   text-decoration: none;
 }
-/* line 111, ../sass/popup.scss */
-.onePhoto .info .u {
+/* line 112, ../sass/popup.scss */
+.onePhoto .info .u, .oneLink .info .u {
   color: rgba(30, 30, 30, 0.9);
   font-size: 6px;
   text-decoration: none;
 }
+/* line 118, ../sass/popup.scss */
+.onePhoto:hover, .oneLink:hover {
+  background: rgba(255, 255, 255, 0.9);
+  color: rgba(10, 10, 10, 0.9);
+}
 
-/* line 119, ../sass/popup.scss */
+/* line 124, ../sass/popup.scss */
 .link {
   border: 1px solid orange;
 }
 
-/* line 122, ../sass/popup.scss */
+/* line 127, ../sass/popup.scss */
 .video {
   border: 1px solid blue;
 }
+/* line 129, ../sass/popup.scss */
+.video .u {
+  margin: 2px;
+}
 
-/* line 125, ../sass/popup.scss */
+/* line 133, ../sass/popup.scss */
 .checkin {
   border: 1px solid yellow;
 }

@@ -72,13 +72,14 @@ body{
 .photo{
   border:1px solid green;
 }
-.onePhoto{
+.onePhoto, .oneLink{
   display:inline-block;
+  text-align:center;
   .p{
     max-width:120px;
     max-height:120px;
-    vertical-align:middle;
     margin:2px 3px;
+    vertical-align:middle;
   }
   .info{
     width:120px;
@@ -98,7 +99,7 @@ body{
       text-decoration:none;
     }
     .pmsg{
-      width: 120px;
+      max-width: 120px;
       max-height: 50px;
       text-decoration:none;
       @include ellipsis;
@@ -114,6 +115,10 @@ body{
       text-decoration:none;
     }
   }
+  &:hover{
+    background:rgba(255,255,255,0.9);
+    color:rgba(10,10,10,0.9);
+  }
 }
 
 .link{
@@ -121,6 +126,9 @@ body{
 }
 .video{
   border:1px solid blue;
+  .u{
+    margin:2px;
+  }
 }
 .checkin{
   border:1px solid yellow;
