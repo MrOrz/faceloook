@@ -11,9 +11,23 @@
 	<script type="text/javascript" src="../js/bayes.js"></script>
 </head>
 <body>
-	<h1>japieAgent Results</h1>
 	<button class="untrain">Set all DB entry as "Untrained"</button>
-	<div class="japie-result">
+	<h1>agents.japie Results</h1>
+	<div class="result" data-agent="japie">
+		<button class="train">Cross-validation</button>
+		<p>Ground truth: <span class="interested"></span> interested, <span class="uninterested"></span> uninterested.</p>
+		<div class="graph"></div>
+	</div>
+	<h1>agents.orz Results</h1>
+	<div class="result" data-agent="orz">
+		<button class="train">Cross-validation</button>
+		<p>Ground truth: <span class="interested"></span> interested, <span class="uninterested"></span> uninterested.</p>
+		<div class="graph"></div>
+	</div>
+	<h1>agents.currentUser Results</h1>
+	<div class="result" data-agent="currentUser">
+		<button class="train">Cross-validation</button>
+		<p>Ground truth: <span class="interested"></span> interested, <span class="uninterested"></span> uninterested.</p>
 		<div class="graph"></div>
 	</div>
 	<script type="text/javascript" src="../js/validation.js"></script>

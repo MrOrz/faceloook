@@ -3,7 +3,7 @@
 	"use strict";
 	var
 		FOLDNUM = 5,
-		THRES_STEP = 0.05,
+		THRES_STEP = 0.01,
 
 
 	// Definition of agents.
@@ -27,32 +27,34 @@
       updated: "2012-06-12T07:44:19+0000"
     }
   */
-	japieAgent = function(item){
-		if(item.from === "100002188898192"){ // always clicks JohnsonLiang's post
-			return 1;
+  agents = {
+		japie : function(item){
+			if(item.from === "100002188898192"){ // always clicks JohnsonLiang's post
+				return 1;
+			}
+			return 0;
+		},
+		orz : function(item){
+			if(
+				item.from === "100000202897569" || // always clicks Japie's post
+				item.groupId === "269274213165180" || // Shotwill Core group
+				item.groupId === "221891011168297" || // VUSE
+				item.message.search("寶米") !== -1
+			){
+				return 1;
+			}
+			return 0;
+		},
+		currentUser : function(item){
+			return item.rowData.clicked;
 		}
-		return 0;
-	},
-	orzAgent = function(item){
-		if(item.from === "100000202897569"){ // always clicks Japie's post
-			return 1;
-		}
-		if(item.groupId === "269274213165180"){ // Shotwill Core group
-			return 1;
-		}
-		return 0;
-	},
-	currentUserAgent = function(item){
-		return item.rowData.clicked;
-	},
+  },
 
 	// Test FOLDNUM folds with the given agent.
 	// testResult is passed to callback.
 	// testResult is an array consists of {cat: ground truth, prob:classifier output}
 	validateWithAgent = function(agent, callback){
 
-		// Reset storage to start anew.
-		BAYES.resetStorage();
 
 		DB.getCached(function(tx, result){
 			var rows = result.rows, // SQL result rows
@@ -64,6 +66,10 @@
 
 			// Multifold cross-validation
 			for(; currentFold < FOLDNUM; currentFold += 1){
+
+				// Reset storage to start anew.
+				BAYES.resetStorage();
+				console.info('Storage resetted.');
 
 				rowId2Train = rowId.slice(0); // make a copy of rowId array
 				rowId2Test = rowId2Train.splice(currentFold * foldSize, foldSize); // splice out test fold
@@ -126,8 +132,8 @@
 			tp: truePositive, tn: trueNegative,
 			fp: falsePositive, fn: falseNegative,
 
-			precision: truePositive / (truePositive + falsePositive),
-			recall: truePositive / (truePositive + falseNegative),
+			precision: truePositive / (truePositive + falsePositive + 0.0001),
+			recall: truePositive / (truePositive + falseNegative + 0.0001),
 			accuracy: (truePositive + trueNegative) / testResult.length,
 			f1: 0
 		}
@@ -138,24 +144,36 @@
 		var thres = 0, scores, points = _([]);
 
 		for(; thres <= 1; thres += THRES_STEP){
-			scores = calculateScores(testResult);
-			points.push({
-				x: scores.precision,
-				y: scores.accuracy
-			});
+			scores = calculateScores(testResult, thres);
+			if(scores.precision || scores.recall){
+				points.push({
+					x: scores.precision,
+					y: scores.recall
+				});
+			}
 		}
 
-		points.sortBy('x');
+		if(points.size() > 0){
+			points.sortBy('x');
+			var paper = raphael($targetCanvas.get(0), 420, 420);
+			paper.linechart(20, 0, 400, 400, points.pluck('x'), points.pluck('y'), {
+				axis: "0 0 1 1", axisstep: 5, symbol: 'circle', smooth:true
+			})
+		}
 
-		var paper = raphael($targetCanvas.get(0));
-		paper.linechart(20, 0, 400, 400, points.pluck('x'), points.pluck('y'), {
-			axis: "0 0 1 1", axisstep: 10, symbol: 'circle', smooth:true
-		})
 	};
 
-	$('h1').click(function(){
-		validateWithAgent(japieAgent, function(result){
-			drawPR(result, $('.japie-result .graph'));
+	$('.train').click(function(){
+		var $p = $(this).parents('.result');
+		$(this).hide();
+		validateWithAgent(agents[$p.data('agent')], function(result){
+			var groundTruth = [0, 0];
+			_.each(result, function(v){
+				groundTruth[v.cat] += 1;
+			});
+			$p.find('.interested').text(groundTruth[1]);
+			$p.find('.uninterested').text(groundTruth[0]);
+			drawPR(result, $p.find('.graph'));
 		});
 	});
 
