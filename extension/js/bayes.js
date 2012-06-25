@@ -67,19 +67,14 @@
           originLinkDesct : this.description || ""
         };
       });
-      console.log('itemsToTokenize: ',itemsToTokenize);
-      console.log('item: ',item);
 
       CAS(itemsToTokenize, function(tokenized){
         tokenized = $.extend(true,{},item,tokenized);
-        console.log('CAS, tokenized: ',tokenized);
         //get prob from classifier w/
         _(tokenized).each(function(v,k){
           var p = window.BAYES.getProb(v);
           v.prob = p;
         });
-        // console.log('tokenized: ',tokenized);
-
         //deal w/ after tokenized
         var sortToken = _.sortBy(_.values(tokenized),function(v){ return -v.prob;});
         console.log('sortToken: ',sortToken);
