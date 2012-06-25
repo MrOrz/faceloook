@@ -81,6 +81,16 @@ body{
   padding:3px;
 }
 
+.time{
+  // text-decoration:none;
+  color:rgba(80, 80, 80, 0.6);
+  font-size:1px;
+  text-decoration:none;
+  float:right;
+  right:5px;
+  position:relative;
+}
+
 // =====================================
 //              STATUS
 // =====================================
@@ -135,12 +145,6 @@ body{
     }
     .des{
       color:rgba(70,70,70,1);
-    }
-    .time{
-      // text-decoration:none;
-      color:rgba(40,40,40,0.7);
-      font-size:4px;
-      text-decoration:none;
     }
     .pmsg{
       max-width: 120px;

@@ -22,13 +22,15 @@
   function(data){ } 拿到的會是斷詞過後的結果*/
   //FB.get('me/feed', {limit:10}, function(data){...})
   var app2div = function(sortToken){
+
     $.each(sortToken,function(k,v){
-      console.log('v:',v);
+      var now = new Date();
+      var updateTime = new Date(v.updated);
+      var age = Math.round((now - updateTime)/3600000);s
       var postId = FB.ID(v.id);
       var info = "" ;
       var href = "https://www.facebook.com/" +
                (v.rowData.href || v.from + '/posts/' + postId);
-      console.log('postId:',postId);
       if(!lists[v.type].hasClass('block')){
         lists[v.type].addClass('block');
         lists[v.type].parent().addClass('appear');
@@ -48,13 +50,7 @@
         if(v.originLinkDesct !== "" ){
           info = info + '<span class="pmsg des">' + v.originLinkDesct + '</span></br>' ;
         }
-        console.log('info:',info);
         // append
-        var now = new Date();
-        var updateTime = new Date();
-        var age = (now - v.updated)/60000;
-
-        console.log('age:',age);
         lists[v.type].append('<div class="onePhoto">' +
           '<a href="' + v.originLink + '">' +
             '<img class="p" src="' + v.picture + '">' +
@@ -66,8 +62,7 @@
             '<div>' +
               '<a href="https://www.facebook.com/' + v.from  + '">' +
                 '<span class="pmsg u">' + v.name + '</span>' +
-              '</a>' +
-              '<span class="pmsg time">' + age + ' mins</span></br>' +
+              '</a>' +              
             '</div>' +
           '</div>' +
         '</div>');
@@ -83,7 +78,6 @@
         if(v.originMsg !== "" ){
           info = info + '<span class="pmsg des">' + v.originMsg + '</span></br>' ;
         }
-        console.log('info:',info);
 
         lists[v.type].append('<div class="oneLink">' +
           '<a href="' + v.originLink + '">' +
@@ -97,7 +91,7 @@
               '<a href="https://www.facebook.com/' + v.from  + '">' +
                 '<span class="pmsg u">' + v.name + '</span>' +
               '</a>' +
-              // '<span class="pmsg time">' + age + ' mins</span></br>' +
+              '<span class="pmsg time"> ' + age + ' mins</span></br>' +
             '</div>' +
           '</div>' +
         '</div>');
@@ -113,7 +107,8 @@
           '<img class="u" src="' + API_URL + v.from + '/picture">' +
           '<div class="text">' +
             '<a href="https://www.facebook.com/' + v.from + '/posts/' + postId  + '" target="_blank">' +
-              '<span class="name">' + v.name + '</span>' + '<br>' +
+              '<span class="name">' + v.name + ' </span>' +
+              '<span class="time">' + age + ' hrs ago</span></br>' +
               '<span class="msg">' + v.originMsg + '</span>' +
             '</a>' +
           '</div>' +
@@ -143,18 +138,15 @@
     $.each(lists,function(k,v){
       v.empty();
     });
-    // console.log('click search!');
     var input = $("#input").val();
     $('.all').css('display','none');
     $('#loading').css('display','inline-block');
 
     FB.get('me/home', {q:input,limit:100}, function(data){
-      console.log('FB.get,data: ',data);
       BAYES.getCASProb(data.data,function(sortToken){
 
         // injecting "rowData" property into sortToken
         var fbids = _.map(sortToken, function(v){return FB.ID(v.id)});
-        console.log(fbids);
         DB.getByFBIDs(fbids, function(tx, result){
           var i = 0, rows = result.rows, rowData = {}, row;
           for(; i<rows.length; i+=1){
@@ -164,7 +156,6 @@
           _.each(sortToken, function(v, i){
             sortToken[i].rowData = rowData[v.id] || {};
           });
-          console.log(sortToken);
           app2div(sortToken);
           $('#loading').css('display','none');
           $('.all').css('display','block');
