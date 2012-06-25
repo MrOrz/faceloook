@@ -1,8 +1,12 @@
 {
-  "name": "Facelink",
+  "name": "Faceloook",
   "version": "0.0.1",
-  "description": "Facebook link manager",
-
+  "description": "Learn your Facebook preference.",
+  "icons":{
+    "16":"images/icon16.jpg",
+    "48":"images/icon48.jpg",
+    "128":"images/icon128.jpg"
+  },
   "permissions": [
     "*://*.facebook.com/",
     "*://localhost/",
@@ -24,8 +28,8 @@
     }
   ],
   "browser_action": {
-     "default_icon": "images/history.png",
-     "default_title": "Facebook link manager",
+     "default_icon": "images/icon48.jpg",
+     "default_title": "Faceboook",
      "default_popup": "html/popup.html"
    },
   "background": {
