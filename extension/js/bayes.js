@@ -107,7 +107,7 @@
       if(tokenized.rowData.updated_at){
         var clickTime = new Date(tokenized.rowData.updated_at);
         var now = new Date();
-        age = (now - clickTime)/3600000;
+        age = (now - clickTime)/(1000*60*60*24*3);
       }
       return Math.exp(-age) * category[1]/(category[0] + category[1]);
     },
