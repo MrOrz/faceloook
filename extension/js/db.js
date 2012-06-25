@@ -2,7 +2,7 @@
 (function(openDatabase, undefined){
   "use strict";
   var
-  RECENT_COUNT = 40,
+  RECENT_COUNT = 50,
   DB_VERSION = '0.1',
   DB_SIZE = 50 * 1024 * 1024, // 50MB database
   dfd = $.Deferred(), // deferred database initialization
