@@ -26,7 +26,7 @@
     $.each(sortToken,function(k,v){
       var now = new Date();
       var updateTime = new Date(v.updated);
-      var age = Math.round((now - updateTime)/3600000);s
+      var age = Math.round((now - updateTime)/3600000);
       var postId = FB.ID(v.id);
       var info = "" ;
       var href = "https://www.facebook.com/" +
@@ -62,7 +62,7 @@
             '<div>' +
               '<a href="https://www.facebook.com/' + v.from  + '">' +
                 '<span class="pmsg u">' + v.name + '</span>' +
-              '</a>' +              
+              '</a>' +
             '</div>' +
           '</div>' +
         '</div>');
@@ -142,7 +142,7 @@
     $('.all').css('display','none');
     $('#loading').css('display','inline-block');
 
-    FB.get('me/home', {q:input,limit:100}, function(data){
+    FB.get('me/home', {q:input,limit:80}, function(data){
       BAYES.getCASProb(data.data,function(sortToken){
 
         // injecting "rowData" property into sortToken
