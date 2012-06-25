@@ -103,12 +103,12 @@
       var category = bayes.classify(totalmsg);
 
       //==== weight ====
-      var clickTime = new Date(tokenized.rowData.updated)
-      console.log('clickTime',clickTime);
-      var now = new Date();
-      var age = now - clickTime
-      console.log('age',age);
-
+      var age = 0;
+      if(tokenized.rowData.updated_at){
+        var clickTime = new Date(tokenized.rowData.updated_at);
+        var now = new Date();
+        age = (now - clickTime)/3600000;
+      }
       return Math.exp(-age) * category[1]/(category[0] + category[1]);
     },
 
