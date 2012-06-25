@@ -65,13 +65,14 @@ body{
 .appear{
   display:inline-block;  
 }
-.msg{
+body .msg{
   font-size:12px;
-  color:#888888;
+  color:#3A3A3A;
   display:inline-block;
   width: 220px;
   max-height: 50px;
   @include ellipsis;
+  font-family: serif;
 }
 .u{
   width:35px;
@@ -83,7 +84,7 @@ body{
   padding:3px;
 }
 
-.time{
+body .time{
   // text-decoration:none;
   color:rgba(80, 80, 80, 0.6);
   font-size:1px;
@@ -91,6 +92,7 @@ body{
   float:right;
   right:5px;
   position:relative;
+  font-family: serif;
 }
 
 // =====================================
@@ -110,7 +112,7 @@ body{
   }
   .name{
     font-size:10px;
-    color:#3A3A3A;
+    color:#888888;
   }
   &:hover{
     background:rgba(255,255,255,0.9);
@@ -142,12 +144,6 @@ body{
     vertical-align:middle;
     text-align:center;
     padding:3px 5px;
-    .cap{
-      color:rgba(30,30,30,0.9);
-    }
-    .des{
-      color:rgba(70,70,70,1);
-    }
     .pmsg{
       max-width: 120px;
       max-height: 50px;
@@ -155,6 +151,13 @@ body{
       @include ellipsis;
       margin:2px 1px;
       font-size:9px;
+      color:#2B2A2A;
+    }
+    .cap{
+      color:rgba(80, 80, 80, 0.9);
+    }
+    .des{
+      color:#858585;
     }
     .lname{
       color:#656464;      

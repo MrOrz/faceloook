@@ -90,8 +90,7 @@
             '<div>' +
               '<a href="https://www.facebook.com/' + v.from  + '">' +
                 '<span class="pmsg u">' + v.name + '</span>' +
-              '</a>' +
-              '<span class="pmsg time"> ' + age + ' mins</span></br>' +
+              '</a>' +            
             '</div>' +
           '</div>' +
         '</div>');
