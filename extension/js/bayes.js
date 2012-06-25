@@ -77,7 +77,6 @@
         });
         //deal w/ after tokenized
         var sortToken = _.sortBy(_.values(tokenized),function(v){ return -v.prob;});
-        console.log('sortToken: ',sortToken);
         callback(sortToken);
 
       }).fail(function(){
@@ -87,8 +86,7 @@
     },
 
     getProb : function(tokenized){
-
-      // console.log('tokenized: ',tokenized);
+      
       var totalmsg = "";
       $.each(tokenized,function(k,msg){
         if(msg !== ''){
@@ -99,7 +97,7 @@
 
       //==== weight ====
       var age = 0;
-      if(tokenized.rowData.updated_at){
+      if(tokenized.rowData !== undefined){
         var clickTime = new Date(tokenized.rowData.updated_at);
         var now = new Date();
         age = (now - clickTime)/(1000*60*60*24*3);
