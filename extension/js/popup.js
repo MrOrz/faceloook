@@ -14,7 +14,8 @@
 
   var
   API_URL = "https://graph.facebook.com/",
-  suggestions = [];
+  suggestions = [],
+  count = 0;
 
   /*GET(src, function(){})\
   src 可以是 facebook id 的陣列
@@ -28,6 +29,14 @@
       var href = "https://www.facebook.com/" +
                (v.rowData.href || v.from + '/posts/' + postId);
       console.log('postId:',postId);
+      if(!lists[v.type].hasClass('block')){
+        lists[v.type].addClass('block');
+        lists[v.type].parent().addClass('appear');
+        count+=1;
+        $('.all').css("width",count*274);
+        $('#bar').css("width",count*274);
+      }
+
       if(v.type === 'TYPEphoto' || v.type === 'TYPEvideo'){
         // make text information
         if(v.originMsg !== "" ){
@@ -99,8 +108,6 @@
           '</div>');
       }
       else if(v.type === 'TYPEstatus' || 1 ){
-        // console.log('v.type === status');
-        // console.log(lists[v.type]);
         v.type = 'TYPEstatus';
         lists[v.type].append('<div class="oneStatus" > ' +
           '<img class="u" src="' + API_URL + v.from + '/picture">' +
@@ -112,37 +119,36 @@
           '</div>' +
         '</div>'
         );
-        // console.log('v.type === status doneeeeee');
       }
     });
   };
 
   GET(DB.getRecentlySeen, function(data){
     // data is the same as bg.js
-    console.log('GET, data: ',data);
-    //sorted
+    $('#loading').css('display','block');
     $.each(data,function(k,v){
       v.prob = BAYES.getProb(v);
       suggestions.push(v);
     });
-    console.log('after each, data: ',data);
   },function(){
-    console.log('suggestions: ', suggestions);
     var sortToken = _.sortBy(suggestions,function(v){ return -v.prob;});
-    console.log('sortToken: ', sortToken);
     app2div(sortToken);
+    $('#loading').css('display','none');
   });
 
   $('#searchform').on('submit',function(e){
     e.preventDefault();
+
     //clear list
     $.each(lists,function(k,v){
       v.empty();
     });
     // console.log('click search!');
-    alert($("#input").val());
     var input = $("#input").val();
-    FB.get('me/home', {q:input,limit:30}, function(data){
+    $('.all').css('display','none');
+    $('#loading').css('display','inline-block');
+
+    FB.get('me/home', {q:input,limit:100}, function(data){
       console.log('FB.get,data: ',data);
       BAYES.getCASProb(data.data,function(sortToken){
 
@@ -160,12 +166,12 @@
           });
           console.log(sortToken);
           app2div(sortToken);
+          $('#loading').css('display','none');
+          $('.all').css('display','block');
         });
       });
 
     });
   });
-
-
 
 }());

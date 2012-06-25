@@ -7,17 +7,62 @@
 @import "compass/typography/text/ellipsis";
 
 body{
-  min-height: 500px;
-  width: 600px;
+  height: 500px;
+  width: 564px;
   background-image:url('../images/bg.gif');
-
 }
 
 #bar{
-  height:50px;
-  background:#F7F6F6;
+  height:32px;
+  background:rgba(197,221,255,0.7);
+  width:564px;
+  padding-bottom:9px;
+  span{
+    font-size:20px;
+    margin:8px 10px;
+    display:inline-block;
+    color:#3D7798;
+    text-shadow: 0px 1px 2px white;
+  }
+  #loading{
+    // display:none;
+    float:left;
+    img{
+      margin:73px 128px;
+      height: 301px;      
+    }
+  }
 }
 
+#search{
+  background:#5BB2E2;
+  color:#ABE0FE;
+  border-radius:10px;
+}
+
+#searchform{
+  display:inline-block;
+}
+
+.all{
+  width:500px;
+  overflow-x:auto;
+  display:block;
+}
+.type{
+  vertical-align:top;  
+  display:none;
+  margin:3px 0px;
+  margin-left:3px;
+  .title{
+    width:263px;
+    padding:2px;
+    padding-left:3px;
+  }
+}
+.appear{
+  display:inline-block;  
+}
 .msg{
   font-size:12px;
   color:#888888;
@@ -40,7 +85,7 @@ body{
 //              STATUS
 // =====================================
 .status{
-  border:1px solid red;
+  border:1px solid #FE8D8D;
 }
 .oneStatus{
   display:inline-block;
@@ -69,12 +114,11 @@ body{
 // =====================================
 //              PHOTO
 // =====================================
-.photo{
-  border:1px solid green;
-}
+
 .onePhoto, .oneLink{
   display:inline-block;
   text-align:center;
+  vertical-align:top;
   .p{
     max-width:120px;
     max-height:120px;
@@ -106,13 +150,19 @@ body{
       margin:2px 1px;
       font-size:9px;
     }
+    .lname{
+      color:#656464;      
+    }
     a{
       text-decoration:none;
     }
     .u{
-      color:rgba(30,30,30,0.9);
+      color:#888888;
       font-size:6px;
       text-decoration:none;
+    }
+    .ldes{
+      color:#B5B5B5;
     }
   }
   &:hover{
@@ -121,16 +171,19 @@ body{
   }
 }
 
+.photo{
+  border:1px solid #FFEE00;
+}
 .link{
-  border:1px solid orange;
+  border:1px solid #9ED797;
 }
 .video{
-  border:1px solid blue;
+  border:1px solid #D5D2F0;
   .u{
     margin:2px;
   }
 }
 .checkin{
-  border:1px solid yellow;
+  border:1px solid #FEFD6C;
 }
 
