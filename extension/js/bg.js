@@ -81,5 +81,4 @@
     BAYES.trainObj(data);
     DB.trainedAll(_(data).pluck('id'));
   });
-
 }(chrome));
